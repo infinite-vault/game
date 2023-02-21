@@ -2,6 +2,8 @@
 
 This is an official pnpm starter turborepo.
 
+https://blog.logrocket.com/build-full-stack-typescript-application-turborepo/#adding-turbo-repo
+
 ## What's inside?
 
 This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:

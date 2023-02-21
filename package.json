@@ -8,18 +8,19 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "clean": "turbo run clean && rimraf node_modules",
+    "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
     "prettier": "latest",
+    "rimraf": "4.1.2",
     "turbo": "latest"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.27.0"
 }

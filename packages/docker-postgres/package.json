@@ -1,0 +1,13 @@
+{
+    "name": "docker-postgres",
+    "version": "0.0.0",
+    "license": "MIT",
+    "scripts": {
+      "db.down": "docker-compose -f postgres.yml down",
+      "dev": "docker-compose -f postgres.yml up"
+    },
+    "publishConfig": {
+      "access": "public"
+    }
+  }
+  

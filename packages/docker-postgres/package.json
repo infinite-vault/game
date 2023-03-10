@@ -4,7 +4,7 @@
     "license": "MIT",
     "scripts": {
       "db.down": "docker-compose -f postgres.yml down",
-      "xdev": "docker-compose -f postgres.yml up"
+      "dev": "docker-compose -f postgres.yml up"
     },
     "publishConfig": {
       "access": "public"

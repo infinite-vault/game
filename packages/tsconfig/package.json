@@ -4,10 +4,11 @@
   "private": true,
   "files": [
     "base.json",
-    "nextjs.json",
-    "react-library.json"
+    "node.json",
+    "react-app.json"
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "dependencies": {}
 }

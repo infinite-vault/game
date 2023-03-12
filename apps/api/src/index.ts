@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
-import { prisma } from 'database';
+import { PrismaClient } from 'database';
 
+const prisma = new PrismaClient();
 const app = express();
 const port = 4000;
 

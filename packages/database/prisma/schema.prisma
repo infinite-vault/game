@@ -3,8 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "../node_modules/.prisma/client"
-  // output   = "../src/generated/client"
 }
 
 datasource db {
@@ -114,7 +112,7 @@ model Stats {
   hpMax         Int           
   mana          Int           
   manaMax       Int           
-  endurance     Int           
+  endurance     Int        
   enduranceMax  Int  
   stepsDone     Int         @default(0)
   stepsMax      Int         @default(4)

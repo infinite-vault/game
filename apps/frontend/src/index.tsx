@@ -1,17 +1,30 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { theme } from './theme/theme';
+import { AppRoutes } from './routing/AppRoutes';
+import { BrowserRouter } from 'react-router-dom';
+import axios from 'axios';
+import { AutoAuthenticate } from './authentication/AutoAuthenticate';
+import { ApolloProvider } from '@apollo/client';
+import { apolloClient } from './graphql/apolloClient';
+import { SnackbarProvider } from 'notistack';
+
+axios.defaults.withCredentials = true;
+
+console.log('ENV', import.meta.env)
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <ApolloProvider client={apolloClient}>
+    <BrowserRouter basename={import.meta.env.PUBLIC_URL}>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider maxSnack={4}>
+          <AutoAuthenticate>
+            <CssBaseline />
+            <AppRoutes />
+          </AutoAuthenticate>
+        </SnackbarProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </ApolloProvider>,
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

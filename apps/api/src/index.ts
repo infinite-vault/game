@@ -17,9 +17,9 @@ app.get('/foo', (req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
+  
+  (async () => {
+    const users = await prisma.user.findMany();
+    console.log('users', users);
+  })();
 });
-
-(async () => {
-  const users = await prisma.user.findMany();
-  console.log('users', users);
-})();

@@ -15,7 +15,7 @@
     "db.migrate.deploy": "prisma migrate deploy",
     "db.migrate.dev": "prisma migrate dev",
     "db.seed": "tsx src/seed.ts",
-    "dev": "tsup --watch",
+    "dev": "prisma generate && tsup --watch",
     "format": "prisma format",
     "lint": "eslint ./src --fix",
     "studio": "prisma studio"

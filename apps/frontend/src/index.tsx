@@ -8,10 +8,8 @@ import { AutoAuthenticate } from './authentication/AutoAuthenticate';
 import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './graphql/apolloClient';
 import { SnackbarProvider } from 'notistack';
-
+  
 axios.defaults.withCredentials = true;
-
-console.log('ENV', import.meta.env)
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

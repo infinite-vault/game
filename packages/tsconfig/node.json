@@ -9,6 +9,7 @@
     "lib": ["esnext", "dom"],
     "target": "es6",
     "module": "commonjs",
+    "moduleResolution": "node",
     "sourceMap": true
   }
 }

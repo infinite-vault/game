@@ -16,14 +16,14 @@
       "outputs": []
     },
     "dev": {
-      "dependsOn": ["^db.generate"],
       "cache": false,
       "env": ["DATABASE_URL"]
     },
-    "clean": {
+    "database#build": {
+      "dependsOn": ["^db.generate"],
       "cache": false
     },
-    "generate": {
+    "clean": {
       "cache": false
     },
     "db.generate": {

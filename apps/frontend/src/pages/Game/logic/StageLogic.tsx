@@ -8,7 +8,7 @@ import { useSetAtom } from 'jotai';
 import { stageAtom } from '../../../store/stageState';
 
 interface StageLogicProps {
-  children: ReactNode[];
+  children: ReactNode | ReactNode[];
 }
 
 const MIN_SCALE = 0.4;
@@ -19,6 +19,7 @@ export const StageLogic = ({ children }: StageLogicProps) => {
   const windowSize = useWindowSize();
   const setStageAtom = useSetAtom(stageAtom);
   const [isFirstRender, setFirstRender] = useState(true);
+  const [isFirstRef, setFirstRef] = useState(true);
   const stageRef = useRef<Konva.Stage>(null);
   const stage = stageRef?.current;
 
@@ -33,7 +34,8 @@ export const StageLogic = ({ children }: StageLogicProps) => {
   }, [stage, isFirstRender]);
 
   useEffect(() => {
-    if (stageRef?.current) {
+    if (stageRef?.current && isFirstRef) {
+      setFirstRef(false);
       setStageAtom(stageRef?.current);
       console.log('stage ref changed', stageRef?.current);
     }

@@ -5,7 +5,5 @@ export const queryTiles = async (_: any, { gameId }: any) => {
     where: { gameId },
   });
 
-  await new Promise((resolve) => setTimeout(resolve, 4000));
-
   return tiles;
 };

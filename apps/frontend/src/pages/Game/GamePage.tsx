@@ -1,15 +1,16 @@
-import { useMutation, useSubscription } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Box } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { END_GAME } from '../../graphql/mutations';
 import { RoutePaths } from '../../routing/AppRoutes';
 import { GameLogic } from './logic/GameLogic';
-import { PlayerLogic } from './logic/PlayerLogic';
+import { PlayerStageLogic } from './logic/PlayerStageLogic';
 import { ActionLogic } from './logic/ActionLogic';
-import { TRIGGER_REFETCH_SUBSCRIPTION } from '../../graphql/subscriptions';
-import { apolloClient } from '../../graphql/apolloClient';
 import { StageLogic } from './logic/StageLogic';
+import { PlayerLogic } from './logic/PlayerLogic';
+import { TileLogic } from './logic/TileLogic';
+import { Navigation } from '../../components/Navigation/Navigation';
 
 export const GamePage = () => {
   const { gameId } = useParams();
@@ -21,15 +22,15 @@ export const GamePage = () => {
   }
 
   const [endGame] = useMutation(END_GAME);
-  useSubscription(TRIGGER_REFETCH_SUBSCRIPTION, {
-    onData: ({ data: d }: any) => {
-      console.info('refetchSubscription', { d });
+  // useSubscription(TRIGGER_REFETCH_SUBSCRIPTION, {
+  //   onData: ({ data: d }: any) => {
+  //     console.info('refetchSubscription', { d });
 
-      if (d.refetch?.query) {
-        apolloClient.refetchQueries({ include: [d.refetch.query] });
-      }
-    },
-  });
+  //     if (d.refetch?.query) {
+  //       apolloClient.refetchQueries({ include: [d.refetch.query] });
+  //     }
+  //   },
+  // });
 
   useEffect(() => {
     const endGameCallback = async () => {
@@ -51,10 +52,14 @@ export const GamePage = () => {
   return (
     <Box sx={{ position: 'relative', backgroundColor: '#232a36' }}>
       <StageLogic>
-        <GameLogic gameId={gameId as string} />
-        <PlayerLogic gameId={gameId as string} />
-        <ActionLogic gameId={gameId as string} />
+        <TileLogic gameId={gameId} />
+        <PlayerStageLogic gameId={gameId} />
       </StageLogic>
+
+      <Navigation />
+      <GameLogic gameId={gameId} />
+      <ActionLogic gameId={gameId} />
+      <PlayerLogic gameId={gameId} />
     </Box>
   );
 };

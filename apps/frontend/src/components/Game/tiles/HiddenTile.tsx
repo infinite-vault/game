@@ -7,14 +7,12 @@ interface HiddenTileProps {
   y: number;
 }
 
-export const HiddenTile = ({ x, y }: HiddenTileProps) => {
-  return (
-    <Rect
-      x={getCoordinate(x)}
-      y={getCoordinate(y)}
-      width={TILE_LENGTH}
-      height={TILE_LENGTH}
-      stroke="#444"
-    />
-  );
-};
+export const HiddenTile = ({ x, y }: HiddenTileProps) => (
+  <Rect
+    x={getCoordinate(x)}
+    y={getCoordinate(y)}
+    width={TILE_LENGTH}
+    height={TILE_LENGTH}
+    stroke="#444"
+  />
+);

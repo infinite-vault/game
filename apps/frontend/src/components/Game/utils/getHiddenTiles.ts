@@ -1,6 +1,5 @@
 import { Tile } from 'database';
 import { Vector2d } from 'konva/lib/types';
-import { isObject } from 'lodash';
 
 export const getHiddentTiles = (tiles: Tile[]) => {
   const hiddenTilesTemp: { [key: string]: boolean | Vector2d } = {};
@@ -13,7 +12,7 @@ export const getHiddentTiles = (tiles: Tile[]) => {
 
   const removeVisibleTiles = () => {
     for (const item in hiddenTilesTemp) {
-      if (isObject(hiddenTilesTemp[item] && hiddenTilesTemp[item] === false)) {
+      if (hiddenTilesTemp[item] === false) {
         delete hiddenTilesTemp[item];
       }
     }

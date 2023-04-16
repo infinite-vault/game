@@ -115,6 +115,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0
       react-konva: 18.2.3
+      react-konva-utils: 1.0.3
       react-router-dom: 6.4.5
       tsconfig: workspace:*
       typescript: 4.9.5
@@ -136,6 +137,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-konva: 18.2.3_bc6dunvwo3nk2akdvqklgchuh4
+      react-konva-utils: 1.0.3_bc6dunvwo3nk2akdvqklgchuh4
       react-router-dom: 6.4.5_biqbaboplfbrettd7655fr4n2y
       use-image: 1.1.0_biqbaboplfbrettd7655fr4n2y
     devDependencies:
@@ -4713,6 +4715,20 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
+  /react-konva-utils/1.0.3_bc6dunvwo3nk2akdvqklgchuh4:
+    resolution: {integrity: sha512-2DTCt8VO1PV8V7FVdnuvV4e42BTS2cMztfPjY0sQL2sUgVl0EdXuCvKohqEy6So/xStAU/+22Yinttg5sbfK9A==}
+    peerDependencies:
+      konva: ^8.3.5 || 9.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      konva: 8.4.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-konva: 18.2.3_bc6dunvwo3nk2akdvqklgchuh4
+      use-image: 1.1.0_biqbaboplfbrettd7655fr4n2y
+    dev: false
 
   /react-konva/18.2.3_bc6dunvwo3nk2akdvqklgchuh4:
     resolution: {integrity: sha512-OPxjBTgaEGU9pt/VJSVM7QNXYHEZ5CkulX+4fTTvbaH+Wh+vMLbXmH3yjWw4kT/5Qi6t0UQKHPPmirCv8/9sdg==}

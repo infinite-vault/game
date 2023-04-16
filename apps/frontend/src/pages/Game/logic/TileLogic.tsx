@@ -3,7 +3,6 @@ import { GET_TILES } from '../../../graphql/queries';
 import { UPDATE_TILE_SUBSCRIPTION } from '../../../graphql/subscriptions';
 import { useQuery } from '@apollo/client';
 import { Tile } from 'database';
-import { Box } from '@mui/material';
 import { Tiles } from '../../../components/Game/tiles/Tiles';
 
 interface TileLogicProps {
@@ -14,15 +13,19 @@ export const TILE_LENGTH = 120;
 export const TILE_LENGTH_HALF = TILE_LENGTH / 2;
 
 export const TileLogic = ({ gameId }: TileLogicProps) => {
-  const { error, data, subscribeToMore } = useQuery(GET_TILES, { variables: { gameId } });
+  const { error, data, subscribeToMore } = useQuery(GET_TILES, {
+    variables: { gameId },
+    fetchPolicy: 'cache-and-network',
+  });
+  console.log('incoming tile data', { data });
   const tiles = (data?.tiles as Tile[]) || [];
 
   useEffect(() => {
-    if (!subscribeToMore) {
+    if (!subscribeToMore || Date.now() !== 123) {
       console.log('subscribeToMore not yet set');
       return;
     }
-    console.log('subscribeToMore is set');
+    console.log('subscribeToMore tiles is set');
 
     subscribeToMore({
       document: UPDATE_TILE_SUBSCRIPTION,
@@ -32,7 +35,7 @@ export const TileLogic = ({ gameId }: TileLogicProps) => {
           return prev;
         }
 
-        console.log('updateQuery', { prev, subscriptionData });
+        console.log('update tile', { prev, subscriptionData });
 
         const updateTile = subscriptionData.data.updateTile as Tile;
         const isTileNew = prev.tiles?.findIndex((tile: Tile) => tile.id === updateTile.id) === -1;
@@ -50,12 +53,10 @@ export const TileLogic = ({ gameId }: TileLogicProps) => {
     });
   }, [subscribeToMore]);
 
-  if (error) {
-    return <Box>Error loading tiles</Box>;
-  }
-
-  if (!tiles) {
-    return <Box>Lade Karte...</Box>;
+  console.log('render tile logic', { tiles });
+  if (error || !tiles.length) {
+    console.log('error or no tiles', { error, tiles });
+    return null;
   }
 
   return <Tiles tiles={tiles} />;

@@ -1,12 +1,12 @@
 import { Circle, Text, Group } from 'react-konva';
 import { getCoordinate } from '../../../utils/getCoordinate';
-import { TILE_LENGTH_HALF } from './Tiles';
 import { HoverTiles } from './HoverTiles';
 import { useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import { stageAtom } from '../../../store/stageState';
 import { getRandomInt } from '../../../utils/getRandomInt';
 import { Prisma } from 'database';
+import { TILE_LENGTH_HALF } from '../../../pages/Game/logic/TileLogic';
 
 interface TilePlayerProps {
   gameId: string;

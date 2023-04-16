@@ -5,6 +5,8 @@ import { UPDATE_GAME_SUBSCRIPTION } from '../../../graphql/subscriptions';
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { RoutePaths } from '../../../routing/AppRoutes';
+import { useAtomValue } from 'jotai';
+import { navAtom } from '../../../store/navState';
 
 interface GameLogicProps {
   gameId: string;
@@ -12,6 +14,7 @@ interface GameLogicProps {
 
 export const GameLogic = ({ gameId }: GameLogicProps) => {
   const navigate = useNavigate();
+  const navState = useAtomValue(navAtom);
   const { data, loading, error, subscribeToMore } = useQuery(GET_GAME, {
     variables: { gameId },
     fetchPolicy: 'network-only',
@@ -40,7 +43,9 @@ export const GameLogic = ({ gameId }: GameLogicProps) => {
 
   return (
     <Box sx={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)' }}>
-      <Typography>{data?.game?.name} </Typography>
+      <Typography>
+        {data?.game?.name} - {navState}
+      </Typography>
     </Box>
   );
 };

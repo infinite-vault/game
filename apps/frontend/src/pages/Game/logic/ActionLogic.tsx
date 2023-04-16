@@ -3,6 +3,10 @@ import { GET_ACTIONS } from '../../../graphql/queries';
 import { Action } from 'database';
 import { useEffect } from 'react';
 import { UPDATE_ACTION_SUBSCRIPTION } from '../../../graphql/subscriptions';
+import { Box } from '@mui/material';
+import { navAtom } from '../../../store/navState';
+import { useAtomValue } from 'jotai';
+import { NavState } from '../../../types/NavState';
 
 interface ActionLogicProps {
   gameId: string;
@@ -10,6 +14,7 @@ interface ActionLogicProps {
 
 export const ActionLogic = ({ gameId }: ActionLogicProps) => {
   const { data, loading, subscribeToMore } = useQuery(GET_ACTIONS, { variables: { gameId } });
+  const navState = useAtomValue(navAtom);
   const actions = data?.actions as Action[];
 
   // const fights = useMemo<Fight[]>(() => {
@@ -61,15 +66,15 @@ export const ActionLogic = ({ gameId }: ActionLogicProps) => {
     return <div>Loading...</div>;
   }
 
-  if (!actions || !Array.isArray(actions) || !actions.length) {
+  if (navState !== NavState.FIGHTS || !actions || !Array.isArray(actions) || !actions.length) {
     return null;
   }
 
   return (
-    <div>
+    <Box sx={{ position: 'absolute', bottom: 0, left: 0 }}>
       <h1>ActionLogic</h1>
       <p>Find me in ./web/src/pages/Game/logic/ActionLogic.tsx</p>
       {/* <Actions gameId={gameId as string} /> */}
-    </div>
+    </Box>
   );
 };

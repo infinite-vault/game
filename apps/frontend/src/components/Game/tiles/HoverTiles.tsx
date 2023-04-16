@@ -3,7 +3,7 @@ import { Vector2d } from 'konva/lib/types';
 import { Rect } from 'react-konva';
 import { MOVE_TO } from '../../../graphql/mutations';
 import { setStageCursor } from '../../../utils/setStageCursor';
-import { TILE_LENGTH, TILE_LENGTH_HALF } from './Tiles';
+import { TILE_LENGTH, TILE_LENGTH_HALF } from '../../../pages/Game/logic/TileLogic';
 
 interface HoverTilesProps {
   x: number;

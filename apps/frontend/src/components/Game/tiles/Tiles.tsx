@@ -12,6 +12,8 @@ interface TilesProps {
 export const Tiles = ({ tiles }: TilesProps) => {
   const hiddenTiles: Vector2d[] = useMemo(() => getHiddentTiles(tiles), [tiles]);
 
+  console.log('render tiles', { tiles, hiddenTiles });
+
   return (
     <>
       {hiddenTiles.map(({ x, y }) => (

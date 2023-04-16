@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   extends: [
-    'turbo',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
@@ -42,20 +41,10 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/require-default-props': 'off',
   },
-  overrides: [
-    {
-      files: ['**/*.ts?(x)'],
-      rules: {},
-    },
-  ],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-  env: {
-    browser: true,
-    es6: true,
-    serviceworker: true,
-  },
+  // overrides: [
+  //   {
+  //     files: ['**/*.ts?(x)'],
+  //     rules: {},
+  //   },
+  // ],
 };

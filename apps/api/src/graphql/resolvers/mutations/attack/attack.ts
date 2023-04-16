@@ -43,7 +43,7 @@ export const attack = async (_: any, { fightId }: any, { userId }: any) => {
 
     setTimeout(() => finalizeAttack(enemy.id), 4000);
   } else {
-    pubsub.publish(PublishKey.UPDATE_FIGHT, { updateFight: { ...fight } });
+    pubsub.publish(PublishKey.UPDATE_ACTION, { updateFight: { ...fight } });
   }
 
   return true;

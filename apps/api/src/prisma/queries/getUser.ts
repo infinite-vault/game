@@ -1,13 +1,17 @@
 import { prisma } from '../prismaClient';
+import { User } from 'database';
 
-export const getUser = async (email: string) => {
-  let user = await prisma.user.findUnique({
+export const getUser = async (rawEmail: string): Promise<User> => {
+  const email = rawEmail.toLowerCase();
+
+  const auth = await prisma.auth.findUnique({
     where: { email },
+    include: { user: true },
   });
 
-  if (!user) {
-    user = await prisma.user.create({ data: { email } });
+  if (!auth) {
+    return await prisma.user.create({ data: { auths: { create: { email, password: '' } } } });
   }
 
-  return user;
+  return auth.user;
 };

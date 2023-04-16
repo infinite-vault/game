@@ -1,29 +1,29 @@
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../../prisma/prismaClient';
-import { NextAction } from '../../../types/NextAction';
-import { TileType } from '../../../types/TileType';
-import { getRandomTileType } from '../../../utils/getRandomTileType';
-import { createFight } from '../helpers/createFight';
-import { createTileAndEnemy } from '../helpers/createTileAndEnemy';
+import { pubsub } from '../../../pubsub';
+import { PublishKey } from '../../../types/PublishKey';
+import { createTile } from '../helpers/createTile';
 import { getCharacter } from '../helpers/getCharacter';
 import { getTile } from '../helpers/getTile';
 import { updateCharacter } from '../helpers/updateCharacter';
 
 export const moveTo = async (_: any, { gameId, x, y }: any, { userId }: any) => {
-  let player = await getCharacter(userId, gameId);
+  const player = await getCharacter(userId, gameId);
 
   // TODO: move "isTileAllowed" to util function - all 8 surrounding/connected tiles are allowed
   const isTileAllowed =
-    player &&
-    ((x === player?.x && (y === player?.y + 1 || y === player?.y - 1)) ||
-      (y === player?.y && (x === player?.x + 1 || x === player?.x - 1)) ||
-      ((x === player?.x + 1 || x === player?.x - 1) && (y === player?.y + 1 || y === player?.y - 1)));
+    player?.tile &&
+    !player?.action &&
+    ((x === player.tile.x && (y === player.tile.y + 1 || y === player.tile.y - 1)) ||
+      (y === player.tile.y && (x === player.tile.x + 1 || x === player.tile.x - 1)) ||
+      ((x === player.tile.x + 1 || x === player.tile.x - 1) &&
+        (y === player.tile.y + 1 || y === player.tile.y - 1)));
 
   if (!isTileAllowed) {
     throw new GraphQLError('TILE_POSITION_FORBIDDEN');
   }
 
-  const nextTileType = getRandomTileType();
+  // const nextTileType = TileType.EMPTY; // getRandomTileType();
 
   let tile;
   try {
@@ -34,7 +34,7 @@ export const moveTo = async (_: any, { gameId, x, y }: any, { userId }: any) => 
   if (!tile) {
     // TODO: maybe put transaction around ALL upcoming calls?
     await prisma.$transaction(async (tx) => {
-      tile = await createTileAndEnemy(gameId, x, y, nextTileType, true, tx);
+      tile = await createTile(gameId, x, y, player, false, tx);
     });
   }
 
@@ -42,23 +42,16 @@ export const moveTo = async (_: any, { gameId, x, y }: any, { userId }: any) => 
     throw new GraphQLError('TILE_CREATION_ERROR');
   }
 
-  let nextAction = NextAction.MOVE;
-  if (tile.type === TileType.MONSTER) {
-    nextAction = NextAction.FIGHT;
-  } else if (tile.type === TileType.SHOP) {
-    nextAction = NextAction.SHOP;
-  }
-
-  player = await updateCharacter(userId, gameId, {
-    x,
-    y,
-    status: 'online',
-    nextAction,
+  await updateCharacter(userId, gameId, {
+    connection: 'ONLINE',
+    tileId: tile.id,
   });
 
-  if (nextAction === NextAction.FIGHT) {
-    await createFight(gameId, player.id, tile?.enemyId as number, tile?.id as number);
-  }
+  pubsub.publish(PublishKey.UPDATE_TILE, { updateTile: { ...tile } });
+
+  // if (nextAction === NextAction.FIGHT) {
+  //   await createFight(gameId, player.id, tile?.enemyId as number, tile?.id as number);
+  // }
 
   return true;
 };

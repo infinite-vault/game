@@ -1,10 +1,10 @@
 import { useAtomValue } from 'jotai';
 import { authAtom } from '../../../store/authState';
-import { Character } from '../../../types/Character';
+import { CharacterWithRelations } from '../../../types/Character';
 import { TilePlayer } from './TilePlayer';
 
 interface TilePlayersProps {
-  players: Character[];
+  players: CharacterWithRelations[];
   gameId: string;
 }
 
@@ -15,7 +15,12 @@ export const TilePlayers = ({ gameId, players }: TilePlayersProps) => {
   return (
     <>
       {players.map((player) => (
-        <TilePlayer key={`player-${player.id}`} player={player} gameId={gameId} isMe={player.userId === userId} />
+        <TilePlayer
+          key={`player-${player.id}`}
+          player={player as any}
+          gameId={gameId}
+          isMe={player.userId === userId}
+        />
       ))}
     </>
   );

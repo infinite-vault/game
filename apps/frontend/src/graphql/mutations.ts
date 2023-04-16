@@ -42,8 +42,8 @@ export const END_GAME = gql`
 `;
 
 export const SET_GAME_STATE = gql`
-  mutation SetGameState($gameId: String!, $status: String!) {
-    setGameState(gameId: $gameId, status: $status)
+  mutation SetGameState($gameId: String!, $connection: String!) {
+    setGameState(gameId: $gameId, connection: $connection)
   }
 `;
 

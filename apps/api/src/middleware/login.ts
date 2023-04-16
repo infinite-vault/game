@@ -4,28 +4,33 @@ import { getJwtPayload } from '../auth/getJwtPayload';
 import { getUser } from '../prisma/queries/getUser';
 
 export const login = async (req: Request, res: Response) => {
-  const { email } = req.body;
   const isProduction = process.env.NODE_ENV === 'production';
-  let id;
+  const userId = await getUserIdByEmailOrJwt(req);
 
-  if (email) {
-    const user = await getUser(email);
-    id = user?.id;
-  } else if (req.cookies['jwt']) {
-    const payload = getJwtPayload(req.cookies.jwt);
-    id = payload?.id;
-  }
-
-  if (id) {
+  if (userId) {
     res
-      .cookie('jwt', createJwt(id), {
+      .cookie('jwt', createJwt(userId), {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'strict' : 'lax',
       })
-      .json({ id });
+      .json({ id: userId });
   } else {
     res.clearCookie('jwt').json({ login: false });
   }
+};
+
+const getUserIdByEmailOrJwt = async (req: Request) => {
+  const { email } = req.body;
+
+  if (email) {
+    const user = await getUser(email);
+    return user?.id;
+  } else if (req.cookies['jwt']) {
+    const payload = getJwtPayload(req.cookies.jwt);
+    return payload?.id;
+  }
+
+  return null;
 };

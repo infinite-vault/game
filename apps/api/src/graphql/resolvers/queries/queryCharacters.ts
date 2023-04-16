@@ -7,5 +7,6 @@ export const queryCharacters = async (_: any, _args: any, { userId }: any) =>
     },
     include: {
       stats: true,
+      tile: true,
     },
   });

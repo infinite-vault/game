@@ -1,4 +1,4 @@
-import { Group, Image, Rect, Text } from 'react-konva';
+import { Group, Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import { getCoordinate } from '../../../utils/getCoordinate';
 import { TILE_LENGTH } from './Tiles';
@@ -9,12 +9,18 @@ interface VisibleTileProps {
   type: string;
 }
 
+export const Background = () => {
+  const [image] = useImage('/images/gras.png');
+
+  return <Image image={image} width={TILE_LENGTH} height={TILE_LENGTH} />;
+};
+
 export const VisibleTile = ({ x, y, type }: VisibleTileProps) => {
   const [image] = useImage('/images/monster.png');
 
   return (
     <Group x={getCoordinate(x)} y={getCoordinate(y)} width={TILE_LENGTH} height={TILE_LENGTH}>
-      <Rect x={0} y={0} width={TILE_LENGTH} height={TILE_LENGTH} fill="#3e753b" />
+      <Background />
       {type === 'monster' ? (
         <Image x={30} y={30} width={TILE_LENGTH - 60} height={TILE_LENGTH - 60} image={image} />
       ) : null}

@@ -32,23 +32,25 @@ const defaultOptions: DefaultOptions = {
 export const apolloClient = new ApolloClient({
   link: splitLink,
   cache: new InMemoryCache({
-    typePolicies: {
-      Enemy: {
-        merge: true,
-      },
-      Fight: {
-        fields: {
-          enemy: {
-            // keyArgs: [],
-            // merge: true,
-            merge(existing, incoming, { mergeObjects }) {
-              console.log('merge', { existing, incoming });
-              return mergeObjects(existing, incoming);
-            },
-          },
-        },
-      },
-    },
+    // typePolicies: {
+    //   Enemy: {
+    //     merge: true,
+    //   },
+    //   Fight: {
+    //     fields: {
+    //       enemy: {
+    //         // keyArgs: [],
+    //         // merge: true,
+    //         merge(existing, incoming, { mergeObjects }) {
+    //           console.log('merge', { existing, incoming });
+    //           return mergeObjects(existing, incoming);
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
   }),
   defaultOptions,
 });
+
+apolloClient.refetchQueries;

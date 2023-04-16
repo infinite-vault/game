@@ -13,6 +13,9 @@ export const breakpoints = {
 
 export const theme = createTheme({
   breakpoints,
+  palette: {
+    mode: 'dark',
+  },
   spacing: 10,
   components: {
     MuiButtonBase: {

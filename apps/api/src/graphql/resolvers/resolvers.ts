@@ -13,7 +13,7 @@ import { queryPlayers } from './queries/queryPlayers';
 import { withFilter } from 'graphql-subscriptions';
 import { queryTiles } from './queries/queryTiles';
 import { PublishKey } from '../../types/PublishKey';
-import { queryFights } from './queries/queryFights';
+import { queryActions } from './queries/queryFights';
 import { attack } from './mutations/attack/attack';
 
 export const resolvers = {
@@ -24,7 +24,7 @@ export const resolvers = {
     players: queryPlayers,
     tiles: queryTiles,
     game: queryGame,
-    fights: queryFights,
+    actions: queryActions,
   },
   Mutation: {
     addCharacter,
@@ -39,13 +39,19 @@ export const resolvers = {
     updateGame: {
       subscribe: withFilter(
         () => pubsub.asyncIterator([PublishKey.UPDATE_GAME]),
-        (payload, variables) => payload.updateGame.id === variables.gameId,
+        (payload, variables) => {
+          console.log('SUBSCRIPTION UPDATE GAME', payload, variables);
+          return payload.updateGame.id === variables.gameId;
+        },
       ),
     },
     updatePlayer: {
       subscribe: withFilter(
         () => pubsub.asyncIterator([PublishKey.UPDATE_PLAYER]),
-        (payload, variables) => payload.updatePlayer.gameId === variables.gameId,
+        (payload, variables) => {
+          console.log(JSON.stringify({ payload, variables }));
+          return payload.updatePlayer.gameId === variables.gameId;
+        },
       ),
     },
     updateTile: {
@@ -54,10 +60,10 @@ export const resolvers = {
         (payload, variables) => payload.updateTile.gameId === variables.gameId,
       ),
     },
-    updateFight: {
+    updateAction: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator([PublishKey.UPDATE_FIGHT]),
-        (payload, variables) => payload.updateFight.gameId === variables.gameId,
+        () => pubsub.asyncIterator([PublishKey.UPDATE_ACTION]),
+        (payload, variables) => payload.updateAction.gameId === variables.gameId,
       ),
     },
   },

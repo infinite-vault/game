@@ -8,6 +8,7 @@
     "module": "commonjs",
     "noEmit": true,
     "resolveJsonModule": true,
+    "moduleResolution": "node",
     "target": "es6"
   }
 }

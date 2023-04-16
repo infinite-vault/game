@@ -50,8 +50,20 @@ const RenderHoverTiles = ({
 export const HoverTiles = ({ x, y, gameId }: HoverTilesProps) => {
   return (
     <>
-      <RenderHoverTiles x={TILE_LENGTH_HALF} y={TILE_LENGTH_HALF} moveToX={x + 1} moveToY={y + 1} gameId={gameId} />
-      <RenderHoverTiles x={TILE_LENGTH_HALF} y={-TILE_LENGTH_HALF} moveToX={x + 1} moveToY={y} gameId={gameId} />
+      <RenderHoverTiles
+        x={TILE_LENGTH_HALF}
+        y={TILE_LENGTH_HALF}
+        moveToX={x + 1}
+        moveToY={y + 1}
+        gameId={gameId}
+      />
+      <RenderHoverTiles
+        x={TILE_LENGTH_HALF}
+        y={-TILE_LENGTH_HALF}
+        moveToX={x + 1}
+        moveToY={y}
+        gameId={gameId}
+      />
       <RenderHoverTiles
         x={TILE_LENGTH_HALF}
         y={-TILE_LENGTH - TILE_LENGTH_HALF}
@@ -59,7 +71,13 @@ export const HoverTiles = ({ x, y, gameId }: HoverTilesProps) => {
         moveToY={y - 1}
         gameId={gameId}
       />
-      <RenderHoverTiles x={-TILE_LENGTH_HALF} y={TILE_LENGTH_HALF} moveToX={x} moveToY={y + 1} gameId={gameId} />
+      <RenderHoverTiles
+        x={-TILE_LENGTH_HALF}
+        y={TILE_LENGTH_HALF}
+        moveToX={x}
+        moveToY={y + 1}
+        gameId={gameId}
+      />
       <RenderHoverTiles
         x={-TILE_LENGTH_HALF}
         y={-TILE_LENGTH - TILE_LENGTH_HALF}

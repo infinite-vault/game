@@ -1,8 +1,8 @@
 import { GraphQLError } from 'graphql';
 import { updateCharacter } from '../helpers/updateCharacter';
 
-export const setGameState = async (_: any, { gameId, status }: any, { userId }: any) => {
-  if (!['afk', 'online', 'offline'].includes(status)) {
+export const setGameState = async (_: any, { gameId, connection }: any, { userId }: any) => {
+  if (!['AFK', 'ONLINE', 'OFFLINE'].includes(connection)) {
     throw new GraphQLError('UnknownStatus', {
       extensions: {
         code: 'UNKNOWNSTATUS',
@@ -11,7 +11,7 @@ export const setGameState = async (_: any, { gameId, status }: any, { userId }: 
     });
   }
 
-  await updateCharacter(userId, gameId, { status });
+  await updateCharacter(userId, gameId, { connection });
 
   return true;
 };

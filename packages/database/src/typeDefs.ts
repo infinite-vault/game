@@ -1,19 +1,34 @@
-export const typeDefs = `#graphql
-  scalar Json
+import { gql } from '@apollo/client';
+
+export const typeDefs = gql`
+  scalar JSON
+  scalar DateTime
 
   type User {
     id: String
+    createdAt: DateTime
+    updatedAt: DateTime
+  }
+
+  type Auth {
+    id: String
+    userId: String
     email: String
-    characters: [Character]
+    password: String
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
   type Game {
     id: String
-    characters: [Character]
-    tiles: [Tile]
-    fights: [Fight]
     name: String
-    stage: String
+
+    characters: [Character!]!
+    tiles: [Tile!]!
+    actions: [Action!]!
+
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
   type Character {
@@ -22,73 +37,75 @@ export const typeDefs = `#graphql
     userId: String
     game: Game
     gameId: String
-    fights: [Fight!]!
-    stats: Stats
+    action: Action
+    actionId: Int
+    tile: Tile
+    tileId: Int
 
     name: String
-    status: String
-    x: Int
-    y: Int
+    avatar: String
+    stats: Stats
+    connection: String
     nextAction: String
+
+    isNpc: Boolean
+    isDefeated: Boolean
+
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
   type Tile {
     id: Int
     game: Game
     gameId: String
-    enemy: Enemy
-    enemyId: Int
-    fight: Fight
-    fightId: Int
 
+    characters: [Character!]!
+    actions: [Action!]!
+
+    type: String
     x: Int
     y: Int
-    type: String    
+
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
-  type Fight {
+  type Action {
     id: Int
     game: Game
     gameId: String
-    enemy: Enemy
-    enemyId: Int
-    character: Character
-    characterId: Int
     tile: Tile
+    tileId: Int
 
-    attack: Json
-    diff: Json
-    history: Json
+    characters: [Character!]!
+    type: String
+
+    round: JSON
+    diff: JSON
+    history: JSON
+
     isOver: Boolean
-    isPending: Boolean
     isDeleted: Boolean
-  }
 
-  type Enemy {
-    id: Int
-    fights: [Fight!]!
-    stats: Stats
-    tile: Tile
-
-    name: String
-    isDefeated: Boolean
-    diff: Json
-    history: Json
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
   type Stats {
     id: Int
     character: Character
     characterId: Int
-    enemy: Enemy
-    enemyId: Int
 
     level: Int
     ep: Int
-
     strength: Int
     wisdom: Int
     stamina: Int
+    agility: Int
+    luck: Int
+    stealth: Int
+    vision: Int
 
     hp: Int
     hpMax: Int
@@ -96,8 +113,12 @@ export const typeDefs = `#graphql
     manaMax: Int
     endurance: Int
     enduranceMax: Int
+
     stepsDone: Int
     stepsMax: Int
+
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
   type Query {
@@ -107,23 +128,24 @@ export const typeDefs = `#graphql
     freeCharacters: [Character!]!
     players(gameId: String!): [Character!]!
     tiles(gameId: String!): [Tile!]!
-    fights(gameId: String!): [Fight!]!
-  }  
+    actions(gameId: String!): [Action!]!
+  }
 
   type Mutation {
     addCharacter(name: String!): Character!
     addCharacterToNewGame(characterId: Int!, name: String!): Game!
     addCharacterToExistingGame(characterId: Int!, code: String!): Game!
     endGame(gameId: String!): Boolean
-    setGameState(gameId: String!, status: String!): Boolean
+    setGameState(gameId: String!, connection: String!): Boolean
     moveTo(gameId: String!, x: Int!, y: Int!): Boolean
-    attack(fightId: Int!): Boolean
+    attack(actionId: Int!): Boolean
   }
 
   type Subscription {
+    updateFoo(gameId: String!): User!
     updateGame(gameId: String!): Game!
     updatePlayer(gameId: String!): Character!
     updateTile(gameId: String!): Tile!
-    updateFight(gameId: String!): Fight!
+    updateAction(gameId: String!): Action!
   }
 `;

@@ -11,7 +11,7 @@ export const createFight = async (
   publish = true,
   client: PrismaClient | Prisma.TransactionClient = prisma,
 ) => {
-  const fight = await client.fight.create({
+  const fight = await client.action.create({
     data: {
       game: {
         connect: { id: gameId },
@@ -37,7 +37,7 @@ export const createFight = async (
   });
 
   if (publish) {
-    pubsub.publish(PublishKey.UPDATE_FIGHT, { updateFight: { ...fight } });
+    pubsub.publish(PublishKey.UPDATE_ACTION, { updateAction: { ...fight } });
   }
 
   return fight;

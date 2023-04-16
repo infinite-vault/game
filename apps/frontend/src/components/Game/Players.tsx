@@ -7,20 +7,20 @@ import { SET_GAME_STATE } from '../../graphql/mutations';
 import { useMyCharacter } from '../../hooks/useMyCharacter';
 import { RoutePaths } from '../../routing/AppRoutes';
 import { stageAtom } from '../../store/stageState';
-import { Character } from '../../types/Character';
+import { CharacterConnection, CharacterWithRelations } from '../../types/Character';
 import { getCoordinate } from '../../utils/getCoordinate';
 import { sortByName } from '../../utils/sortByName';
 import { TILE_LENGTH_HALF } from './tiles/Tiles';
 
 interface PlayerProps {
   gameId: string;
-  players: Character[];
+  players: CharacterWithRelations[];
 }
 
 export const Players = ({ gameId, players }: PlayerProps) => {
   const [setStatus] = useMutation(SET_GAME_STATE);
   const stage = useAtomValue(stageAtom);
-  const me = useMyCharacter(players) as Character;
+  const me = useMyCharacter(players);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,18 +33,28 @@ export const Players = ({ gameId, players }: PlayerProps) => {
   }
 
   const renderStatusButton = () => {
-    switch (me?.status) {
-      case 'online':
+    switch (me?.connection) {
+      case CharacterConnection.ONLINE:
         return (
-          <Button variant="outlined" onClick={() => setStatus({ variables: { gameId, status: 'afk' } })}>
+          <Button
+            variant="outlined"
+            onClick={() =>
+              setStatus({ variables: { gameId, connection: CharacterConnection.AFK } })
+            }
+          >
             AFK
           </Button>
         );
         break;
 
-      case 'afk':
+      case CharacterConnection.AFK:
         return (
-          <Button variant="outlined" onClick={() => setStatus({ variables: { gameId, status: 'online' } })}>
+          <Button
+            variant="outlined"
+            onClick={() =>
+              setStatus({ variables: { gameId, connection: CharacterConnection.ONLINE } })
+            }
+          >
             Online
           </Button>
         );
@@ -73,7 +83,7 @@ export const Players = ({ gameId, players }: PlayerProps) => {
         variant="outlined"
         color="primary"
         onClick={() => {
-          setStatus({ variables: { gameId, status: 'offline' } });
+          setStatus({ variables: { gameId, connection: CharacterConnection.OFFLINE } });
           navigate(RoutePaths.DASHBOARD);
         }}
       >
@@ -84,8 +94,8 @@ export const Players = ({ gameId, players }: PlayerProps) => {
           size="small"
           onClick={() =>
             stage.position({
-              x: stage.width() / 2 - getCoordinate(me.x) - TILE_LENGTH_HALF,
-              y: stage.height() / 2 - getCoordinate(me.y) - TILE_LENGTH_HALF,
+              x: stage.width() / 2 - getCoordinate(me.tile?.x as number) - TILE_LENGTH_HALF,
+              y: stage.height() / 2 - getCoordinate(me.tile?.y as number) - TILE_LENGTH_HALF,
             })
           }
         >
@@ -93,24 +103,30 @@ export const Players = ({ gameId, players }: PlayerProps) => {
         </Button>
       ) : null}
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        {[...(players || [])].sort(sortByName).map((player: Character) => (
+        {[...(players || [])].sort(sortByName).map((player: CharacterWithRelations) => (
           <Box sx={{ mt: '14px' }} key={`${player}-${player.id}`}>
             <Box>
               {player.name} {me === player ? '(me)' : ''}
             </Box>
             <Box>
-              Level: {player.stats?.level} - EP: {player.stats?.ep} - HP: {player.stats?.hp}/{player.stats?.hpMax} -
-              Mana: {player.stats?.mana}/{player.stats?.manaMax} - Ausdauer: {player.stats?.endurance}/
-              {player.stats?.enduranceMax}
+              Level: {player.stats?.level} - EP: {player.stats?.ep} - HP: {player.stats?.hp}/
+              {player.stats?.hpMax} - Mana: {player.stats?.mana}/{player.stats?.manaMax} - Ausdauer:{' '}
+              {player.stats?.endurance}/{player.stats?.enduranceMax}
             </Box>
             <Box>
               <Chip
                 size="small"
-                color={player.status === 'online' ? 'success' : 'primary'}
-                variant={player.status === 'offline' ? 'outlined' : 'filled'}
-                label={player.status}
+                color={player.connection === CharacterConnection.ONLINE ? 'success' : 'primary'}
+                variant={player.connection === CharacterConnection.OFFLINE ? 'outlined' : 'filled'}
+                label={player.connection}
               />
-              <Chip sx={{ ml: '10px' }} size="small" color="primary" variant="outlined" label={player.nextAction} />
+              <Chip
+                sx={{ ml: '10px' }}
+                size="small"
+                color="primary"
+                variant="outlined"
+                label={player.nextAction}
+              />
             </Box>
           </Box>
         ))}

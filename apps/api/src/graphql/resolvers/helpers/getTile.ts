@@ -11,7 +11,8 @@ export const getTile = async (gameId: string, x: number, y: number) => {
       },
     },
     include: {
-      enemy: true,
+      actions: true,
+      characters: true,
     },
   });
 

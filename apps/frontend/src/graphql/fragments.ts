@@ -15,74 +15,72 @@ export const STATS_FIELDS = gql`
     manaMax
     endurance
     enduranceMax
+
     stepsDone
     stepsMax
-  }
-`;
-
-export const CHARACTER_FIELDS = gql`
-  ${STATS_FIELDS}
-  fragment CharacterFields on Character {
-    id
-    userId
-    name
-    x
-    y
-    stats {
-      ...StatsFields
-    }
-    status
-    nextAction
   }
 `;
 
 export const TILE_FIELDS = gql`
   fragment TileFields on Tile {
     id
+
+    type
     x
     y
-    type
   }
 `;
 
-export const ENEMY_FIELDS = gql`
+export const ACTION_FIELDS = gql`
+  ${TILE_FIELDS}
+  fragment ActionFields on Action {
+    id
+    gameId
+    type
+
+    tile {
+      ...TileFields
+    }
+    characters {
+      id
+    }
+
+    round
+    diff
+    history
+
+    isOver
+    isDeleted
+  }
+`;
+
+export const CHARACTER_FIELDS = gql`
   ${STATS_FIELDS}
   ${TILE_FIELDS}
-  fragment EnemyFields on Enemy {
+  ${ACTION_FIELDS}
+  fragment CharacterFields on Character {
     id
-    stats {
-      ...StatsFields
+    userId
+
+    actionId
+    action {
+      ...ActionFields
     }
+    tileId
     tile {
       ...TileFields
     }
 
     name
+    avatar
+    stats {
+      ...StatsFields
+    }
+    connection
+    nextAction
+
+    isNpc
     isDefeated
-    history
-  }
-`;
-
-export const FIGHT_FIELDS = gql`
-  ${TILE_FIELDS}
-  ${ENEMY_FIELDS}
-  fragment FightFields on Fight {
-    id
-    gameId
-    enemy {
-      ...EnemyFields
-    }
-    characterId
-    tile {
-      ...TileFields
-    }
-
-    attack
-    diff
-    history
-    isOver
-    isPending
-    isDeleted
   }
 `;
 

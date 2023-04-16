@@ -20,8 +20,9 @@ export const updateCharacter = async (
     data,
     include: {
       user: true,
-      game: true,
       stats: true,
+      tile: true,
+      action: true,
     },
   });
 

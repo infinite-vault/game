@@ -6,6 +6,7 @@ export const addCharacter = async (_: any, { name }: any, { userId }: any) =>
   await prisma.character.create({
     data: {
       name,
+      avatar: 'default',
       userId,
 
       stats: {

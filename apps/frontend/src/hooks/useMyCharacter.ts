@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai';
 import { authAtom } from '../store/authState';
-import { Character } from '../types/Character';
+import { CharacterWithRelations } from '../types/Character';
 
-export const useMyCharacter = (players: Character[]) => {
+export const useMyCharacter = (players: CharacterWithRelations[]) => {
   const userId = useAtomValue(authAtom);
 
   if (!userId || !players?.length) {

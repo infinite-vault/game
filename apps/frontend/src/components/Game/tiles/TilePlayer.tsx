@@ -1,5 +1,4 @@
 import { Circle, Text, Group } from 'react-konva';
-import { Character } from '../../../types/Character';
 import { getCoordinate } from '../../../utils/getCoordinate';
 import { TILE_LENGTH_HALF } from './Tiles';
 import { HoverTiles } from './HoverTiles';
@@ -7,17 +6,18 @@ import { useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import { stageAtom } from '../../../store/stageState';
 import { getRandomInt } from '../../../utils/getRandomInt';
+import { Prisma } from 'database';
 
 interface TilePlayerProps {
   gameId: string;
-  player: Character;
+  player: Prisma.CharacterGetPayload<{ include: { tile: true; action: true } }>;
   isMe: boolean;
 }
 
 const PLAYER_CIRCLE_DIAMETER = 30;
 
 export const TilePlayer = ({ isMe, gameId, player }: TilePlayerProps) => {
-  const showHoverTiles = player.nextAction === 'move' && isMe;
+  const showHoverTiles = !player.action && isMe;
   const stage = useAtomValue(stageAtom);
 
   useEffect(() => {
@@ -28,8 +28,8 @@ export const TilePlayer = ({ isMe, gameId, player }: TilePlayerProps) => {
 
   return (
     <Group
-      x={getCoordinate(player.x) + TILE_LENGTH_HALF}
-      y={getCoordinate(player.y) + TILE_LENGTH_HALF}
+      x={getCoordinate(player.tile?.x as number) + TILE_LENGTH_HALF}
+      y={getCoordinate(player.tile?.y as number) + TILE_LENGTH_HALF}
       width={PLAYER_CIRCLE_DIAMETER}
       height={PLAYER_CIRCLE_DIAMETER}
       opacity={0.75}
@@ -40,7 +40,13 @@ export const TilePlayer = ({ isMe, gameId, player }: TilePlayerProps) => {
         width={PLAYER_CIRCLE_DIAMETER}
         height={PLAYER_CIRCLE_DIAMETER}
       >
-        <Circle x={0} y={0} width={PLAYER_CIRCLE_DIAMETER} height={PLAYER_CIRCLE_DIAMETER} fill="#fff" />
+        <Circle
+          x={0}
+          y={0}
+          width={PLAYER_CIRCLE_DIAMETER}
+          height={PLAYER_CIRCLE_DIAMETER}
+          fill="#fff"
+        />
         <Text
           text={player.name.slice(0, 3)}
           x={PLAYER_CIRCLE_DIAMETER / -2}
@@ -53,7 +59,9 @@ export const TilePlayer = ({ isMe, gameId, player }: TilePlayerProps) => {
         />
       </Group>
 
-      {showHoverTiles ? <HoverTiles x={player.x} y={player.y} gameId={gameId} /> : null}
+      {showHoverTiles ? (
+        <HoverTiles x={player.tile?.x as number} y={player.tile?.y as number} gameId={gameId} />
+      ) : null}
     </Group>
   );
 };

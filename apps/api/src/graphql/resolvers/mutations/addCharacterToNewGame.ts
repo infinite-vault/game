@@ -13,6 +13,7 @@ export const addCharacterToNewGame = async (_: any, { characterId, name }: any) 
         create: {
           x: 0,
           y: 0,
+          type: 'START',
         },
       },
     },

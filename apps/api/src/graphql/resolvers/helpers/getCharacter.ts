@@ -10,7 +10,9 @@ export const getCharacter = async (userId: string, gameId: string) => {
       },
     },
     include: {
+      action: true,
       stats: true,
+      tile: true,
     },
   });
 

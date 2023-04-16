@@ -10,112 +10,154 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+enum ActionType {
+  ATTACK
+  DEFEND
+  FIGHT
+}
+
+enum TileType {
+  START
+  ENEMY
+  DEFEATED
+  PORTAL
+  BOSS
+  SHOP
+  TREASURE
+  TRAP
+  EMPTY
+}
+
+enum CharacterConnection {
+  ONLINE
+  OFFLINE
+  AFK
+}
+
 model User {
   id         String      @id @default(uuid())
-  email      String      @unique
   characters Character[]
+  auths      Auth[]
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt @default(now())
+}
+
+model Auth {
+  id         String      @id @default(uuid())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String
+
+  email      String      @unique
+  password   String
+
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt @default(now())
 }
 
 model Game {
   id          String      @id @default(uuid())
+  name        String
+
   characters  Character[]
   tiles       Tile[]  
-  fights      Fight[]
-  name        String
+  actions     Action[]
+
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt @default(now())
 }
 
 model Character {
   id          Int           @id @default(autoincrement())
-  user        User          @relation(fields: [userId], references: [id])
-  userId      String
+  user        User?         @relation(fields: [userId], references: [id])
+  userId      String?
   game        Game?         @relation(fields: [gameId], references: [id])
   gameId      String?
-  fights      Fight[]
-  stats       Stats?
+  action      Action?       @relation(fields: [actionId], references: [id])
+  actionId    Int?
+  tile        Tile?         @relation(fields: [tileId], references: [id])
+  tileId      Int?     
   
   name        String
-  status      String        @default("offline")
-  x           Int           @default(0)
-  y           Int           @default(0)
-  nextAction  String        @default("move")
+  avatar      String
+  stats       Stats?
+  connection  CharacterConnection  @default(OFFLINE)
+
+  isNpc       Boolean       @default(false)
+  isDefeated  Boolean       @default(false)
+
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt @default(now())
+  
   @@unique([userId, gameId])
 }
 
 model Tile {
-  id          Int       @id @default(autoincrement())
-  game        Game?     @relation(fields: [gameId], references: [id])
-  gameId      String?
-  enemy       Enemy?    @relation(fields: [enemyId], references: [id])
-  enemyId     Int?      @unique
-  fights      Fight[]
+  id          Int      @id @default(autoincrement())
+  game        Game     @relation(fields: [gameId], references: [id])
+  gameId      String
+
+  characters  Character[]
+  actions     Action[]
   
+  type        TileType  @default(EMPTY)
   x           Int       @default(0)
   y           Int       @default(0)
-  type        String    @default("start")
+
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt @default(now())
+
   @@unique([gameId, x, y])
 }
 
-model Fight {
-  id            Int         @id @default(autoincrement())
-  game          Game?       @relation(fields: [gameId], references: [id])
-  gameId        String?
-  enemy         Enemy?      @relation(fields: [enemyId], references: [id])
-  enemyId       Int?        
-  character     Character?  @relation(fields: [characterId], references: [id])
-  characterId   Int?        
-  tile          Tile?       @relation(fields: [tileId], references: [id])
-  tileId        Int?    
-  attack        Json? 
-  diff          Json? 
-  history       Json        @default("[]")
-  
-  isOver        Boolean     @default(false)
-  isPending     Boolean     @default(false)
-  isDeleted     Boolean     @default(false)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
+model Action {
+  id          Int       @id @default(autoincrement())
+  game        Game     @relation(fields: [gameId], references: [id])
+  gameId      String
 
-model Enemy {
-  id            Int         @id @default(autoincrement())
-  fights        Fight[]
-  stats         Stats?
-  tile          Tile?
-  name          String    
-  isDefeated    Boolean?    @default(false)
+  characters  Character[]
+  type        ActionType 
+
+  round         Json        @default("{}")
+  diff          Json        @default("{}")
   history       Json        @default("[]")
-  diff          Json? 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+
+  isOver        Boolean     @default(false)
+  isDeleted     Boolean     @default(false)
+
+  tile        Tile       @relation(fields: [tileId], references: [id])
+  tileId      Int 
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt @default(now())
 }
 
 model Stats {
   id            Int         @id @default(autoincrement())
   character     Character?  @relation(fields: [characterId], references: [id])
   characterId   Int?        @unique
-  enemy         Enemy?      @relation(fields: [enemyId], references: [id])
-  enemyId       Int?        @unique
+
   level         Int         @default(1)
   ep            Int         @default(0)
-  strength      Int
-  wisdom        Int
-  stamina       Int
-  hp            Int           
-  hpMax         Int           
-  mana          Int           
-  manaMax       Int           
-  endurance     Int        
-  enduranceMax  Int  
+  strength      Int         @default(0)
+  wisdom        Int         @default(0)
+  stamina       Int         @default(0)
+  agility       Int         @default(0)
+  luck          Int         @default(0)
+  stealth       Int         @default(0)
+  vision        Int         @default(0)
+
+  hp            Int         @default(0)
+  hpMax         Int         @default(0)
+  mana          Int         @default(0)
+  manaMax       Int         @default(0)
+  endurance     Int         @default(0)
+  enduranceMax  Int         @default(0)
+
   stepsDone     Int         @default(0)
   stepsMax      Int         @default(4)
+
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

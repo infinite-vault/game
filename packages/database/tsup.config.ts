@@ -1,14 +1,13 @@
-import { defineConfig } from "tsup";
-
-// eslint-disable-next-line turbo/no-undeclared-env-vars
-const isProduction = process.env.NODE_ENV === "production";
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   clean: true,
   dts: true,
-  entry: ["src/index.ts"],
-  format: ["cjs", "esm"],
-  minify: isProduction,
+  entry: ['src/index.ts'],
+  format: ['cjs', 'esm'],
+  minify: false,
   sourcemap: true,
-  external: [/generated/],
+  // external: ['apollo-server-core', 'express'],
+  // external: [/generated/],
+  // noExternal: [],
 });

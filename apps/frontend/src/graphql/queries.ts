@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { GAME_FIELDS, CHARACTER_FIELDS, TILE_FIELDS, FIGHT_FIELDS } from './fragments';
+import { GAME_FIELDS, CHARACTER_FIELDS, TILE_FIELDS, ACTION_FIELDS } from './fragments';
 
 export const GET_USER = gql`
   query GetUser($email: String) {
@@ -52,6 +52,9 @@ export const GET_GAME = gql`
   query GetGame($gameId: String!) {
     game(gameId: $gameId) {
       ...GameFields
+      characters {
+        id
+      }
     }
   }
 `;
@@ -74,11 +77,11 @@ export const GET_TILES = gql`
   }
 `;
 
-export const GET_FIGHTS = gql`
-  ${FIGHT_FIELDS}
-  query GetFights($gameId: String!) {
-    fights(gameId: $gameId) {
-      ...FightFields
+export const GET_ACTIONS = gql`
+  ${ACTION_FIELDS}
+  query GetActions($gameId: String!) {
+    actions(gameId: $gameId) {
+      ...ActionFields
     }
   }
 `;

@@ -1,14 +1,11 @@
-import { Stats } from './Stats';
+import { Prisma } from 'database';
 
-export interface Character {
-  id: number;
-  userId: string;
-  name: string;
-  status: string;
-  x: number;
-  y: number;
-  stepsMax: number;
-  stepsDone: number;
-  nextAction: string;
-  stats: Stats;
+export type CharacterWithRelations = Prisma.CharacterGetPayload<{
+  include: { stats: true; tile: true };
+}>;
+
+export enum CharacterConnection {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+  AFK = 'AFK',
 }

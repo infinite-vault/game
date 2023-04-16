@@ -1,20 +1,16 @@
 import { prisma } from '../../../prisma/prismaClient';
 
-export const queryFights = async (_: any, { gameId }: any) => {
-  const fights = await prisma.fight.findMany({
+export const queryActions = async (_: any, { gameId }: any) => {
+  const actions = await prisma.action.findMany({
     where: { gameId, isDeleted: false },
     include: {
-      character: true,
-      enemy: {
-        include: {
-          stats: true,
-        },
-      },
+      characters: true,
+      tile: true,
     },
     orderBy: {
       id: 'asc',
     },
   });
 
-  return fights.map((fight) => ({ ...fight, diff: null }));
+  return actions.map((action) => ({ ...action, diff: null }));
 };

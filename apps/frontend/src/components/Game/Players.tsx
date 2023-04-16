@@ -66,17 +66,7 @@ export const Players = ({ gameId, players }: PlayerProps) => {
   };
 
   return (
-    <Box
-      sx={{
-        border: '1px solid grey',
-        p: '12px',
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        backgroundColor: 'lightgray',
-        minWidth: '250px',
-      }}
-    >
+    <Box>
       <Typography>Players</Typography>
       {renderStatusButton()}{' '}
       <Button

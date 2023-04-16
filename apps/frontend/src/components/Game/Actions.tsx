@@ -31,16 +31,7 @@ export const Actions = ({ actions }: ActionsProps) => {
   // };
 
   return (
-    <Box
-      sx={{
-        position: 'absolute',
-        top: '10px',
-        left: '10px',
-        p: '10px',
-        width: '40vw',
-        backgroundColor: 'lightgray',
-      }}
-    >
+    <Box>
       <Typography>It's fight time!!!</Typography>
       {actions.map((action) => (
         <div>{action.id}</div>

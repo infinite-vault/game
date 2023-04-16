@@ -3,10 +3,11 @@ import { GET_ACTIONS } from '../../../graphql/queries';
 import { Action } from 'database';
 import { useEffect } from 'react';
 import { UPDATE_ACTION_SUBSCRIPTION } from '../../../graphql/subscriptions';
-import { Box } from '@mui/material';
 import { navAtom } from '../../../store/navState';
 import { useAtomValue } from 'jotai';
 import { NavState } from '../../../types/NavState';
+import { Actions } from '../../../components/Game/Actions';
+import { ContentContainer } from '../../../components/Navigation/ContentContainer';
 
 interface ActionLogicProps {
   gameId: string;
@@ -71,10 +72,8 @@ export const ActionLogic = ({ gameId }: ActionLogicProps) => {
   }
 
   return (
-    <Box sx={{ position: 'absolute', bottom: 0, left: 0 }}>
-      <h1>ActionLogic</h1>
-      <p>Find me in ./web/src/pages/Game/logic/ActionLogic.tsx</p>
-      {/* <Actions gameId={gameId as string} /> */}
-    </Box>
+    <ContentContainer>
+      <Actions actions={actions} />
+    </ContentContainer>
   );
 };

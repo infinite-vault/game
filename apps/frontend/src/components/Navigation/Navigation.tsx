@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 
 const NavItems = [
   {
-    label: 'Dashboard',
+    label: 'Home',
     id: NavState.HOME,
     icon: <DashboardIcon />,
   },

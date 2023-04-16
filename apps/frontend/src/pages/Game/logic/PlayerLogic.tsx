@@ -6,6 +6,7 @@ import { Players } from '../../../components/Game/Players';
 import { useAtomValue } from 'jotai';
 import { navAtom } from '../../../store/navState';
 import { NavState } from '../../../types/NavState';
+import { ContentContainer } from '../../../components/Navigation/ContentContainer';
 
 interface PlayerLogicProps {
   gameId: string;
@@ -62,5 +63,9 @@ export const PlayerLogic = ({ gameId }: PlayerLogicProps) => {
     return null;
   }
 
-  return <Players gameId={gameId} players={data.players} />;
+  return (
+    <ContentContainer>
+      <Players gameId={gameId} players={data.players} />
+    </ContentContainer>
+  );
 };

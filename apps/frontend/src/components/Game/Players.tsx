@@ -10,7 +10,7 @@ import { stageAtom } from '../../store/stageState';
 import { CharacterConnection, CharacterWithRelations } from '../../types/Character';
 import { getCoordinate } from '../../utils/getCoordinate';
 import { sortByName } from '../../utils/sortByName';
-import { TILE_LENGTH_HALF } from './tiles/Tiles';
+import { TILE_LENGTH_HALF } from '../../pages/Game/logic/TileLogic';
 
 interface PlayerProps {
   gameId: string;
@@ -120,13 +120,13 @@ export const Players = ({ gameId, players }: PlayerProps) => {
                 variant={player.connection === CharacterConnection.OFFLINE ? 'outlined' : 'filled'}
                 label={player.connection}
               />
-              <Chip
+              {/* <Chip
                 sx={{ ml: '10px' }}
                 size="small"
                 color="primary"
                 variant="outlined"
-                label={player.nextAction}
-              />
+                label={player.nextAction || 'idle'}
+              /> */}
             </Box>
           </Box>
         ))}

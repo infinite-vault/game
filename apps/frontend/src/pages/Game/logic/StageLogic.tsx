@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
 import { useWindowSize } from '../../../hooks/useWindowSize';
 import Konva from 'konva';
@@ -11,8 +11,6 @@ interface StageLogicProps {
   children: ReactNode[];
 }
 
-export const TILE_LENGTH = 120;
-export const TILE_LENGTH_HALF = TILE_LENGTH / 2;
 const MIN_SCALE = 0.4;
 const MAX_SCALE = 4;
 const SCALE_FACTOR = 1.05;
@@ -20,10 +18,19 @@ const SCALE_FACTOR = 1.05;
 export const StageLogic = ({ children }: StageLogicProps) => {
   const windowSize = useWindowSize();
   const setStageAtom = useSetAtom(stageAtom);
+  const [isFirstRender, setFirstRender] = useState(true);
   const stageRef = useRef<Konva.Stage>(null);
   const stage = stageRef?.current;
 
   useEffect(() => () => setStageAtom(null)), [];
+
+  useEffect(() => {
+    if (stage && isFirstRender) {
+      console.log('Tiles first render - set center position');
+      stage.position({ x: windowSize.width / 2, y: windowSize.height / 2 });
+      setFirstRender(false);
+    }
+  }, [stage, isFirstRender]);
 
   useEffect(() => {
     if (stageRef?.current) {

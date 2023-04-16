@@ -1,3 +1,3 @@
-import { TILE_LENGTH, TILE_LENGTH_HALF } from '../components/Game/tiles/Tiles';
+import { TILE_LENGTH, TILE_LENGTH_HALF } from '../pages/Game/logic/TileLogic';
 
 export const getCoordinate = (coordinate: number) => coordinate * TILE_LENGTH - TILE_LENGTH_HALF;

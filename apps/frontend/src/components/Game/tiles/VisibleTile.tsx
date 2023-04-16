@@ -1,7 +1,7 @@
 import { Group, Image, Text } from 'react-konva';
 import useImage from 'use-image';
 import { getCoordinate } from '../../../utils/getCoordinate';
-import { TILE_LENGTH } from './Tiles';
+import { TILE_LENGTH } from '../../../pages/Game/logic/TileLogic';
 
 interface VisibleTileProps {
   x: number;

@@ -17,15 +17,12 @@ export const TileLogic = ({ gameId }: TileLogicProps) => {
     variables: { gameId },
     fetchPolicy: 'cache-and-network',
   });
-  console.log('incoming tile data', { data });
   const tiles = (data?.tiles as Tile[]) || [];
 
   useEffect(() => {
-    if (!subscribeToMore || Date.now() !== 123) {
-      console.log('subscribeToMore not yet set');
+    if (!subscribeToMore) {
       return;
     }
-    console.log('subscribeToMore tiles is set');
 
     subscribeToMore({
       document: UPDATE_TILE_SUBSCRIPTION,
@@ -53,9 +50,7 @@ export const TileLogic = ({ gameId }: TileLogicProps) => {
     });
   }, [subscribeToMore]);
 
-  console.log('render tile logic', { tiles });
   if (error || !tiles.length) {
-    console.log('error or no tiles', { error, tiles });
     return null;
   }
 

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_ACTIONS } from '../../../graphql/queries';
+import { GET_ACTIONS, GET_PLAYERS } from '../../../graphql/queries';
 import { Action } from 'database';
 import { useEffect } from 'react';
 import { UPDATE_ACTION_SUBSCRIPTION } from '../../../graphql/subscriptions';
@@ -15,6 +15,11 @@ interface ActionLogicProps {
 
 export const ActionLogic = ({ gameId }: ActionLogicProps) => {
   const { data, loading, subscribeToMore } = useQuery(GET_ACTIONS, { variables: { gameId } });
+  const { data: playerData } = useQuery(GET_PLAYERS, {
+    variables: { gameId },
+    fetchPolicy: 'cache-only',
+  });
+
   const navState = useAtomValue(navAtom);
   const actions = data?.actions as Action[];
 
@@ -23,7 +28,7 @@ export const ActionLogic = ({ gameId }: ActionLogicProps) => {
   //   return data?.fights ? (data.fights as Fight[]).map((fight) => ({ ...fight, diff: undefined })) : [];
   // }, [data?.fights]);
 
-  console.log('Actions', { fights: actions });
+  console.log('Actions', { fights: actions, playerData });
 
   useEffect(() => {
     console.log('subscribe to fights');

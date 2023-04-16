@@ -9,7 +9,6 @@ export const updateTile = async (
   publish = true,
   client: PrismaClient | Prisma.TransactionClient = prisma,
 ) => {
-  console.log('tile update', tileId);
   const tile = await client.tile.update({
     where: {
       id: tileId,

@@ -33,9 +33,11 @@ export const Actions = ({ actions }: ActionsProps) => {
   return (
     <Box>
       <Typography>It's fight time!!!</Typography>
-      {actions.map((action) => (
-        <div>{action.id}</div>
-      ))}
+      <ul>
+        {actions.map((action) => (
+          <li>#{action.id}</li>
+        ))}
+      </ul>
       {/* {renderGroupedFights()} */}
     </Box>
   );

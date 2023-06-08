@@ -1,14 +1,34 @@
 import { useQuery } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GET_FREE_CHARACTERS } from '../../graphql/queries';
 import { AddCharacter } from './AddCharacter';
 import { AddCharToExistingGame } from './forms/AddCharToExistingGroup';
 import { AddCharToNewGame } from './forms/AddCharToNewGame';
+import { useAtom } from 'jotai';
+import { myCharactersAtom } from '../../store/myCharactersState';
+import { socket } from '../../sockets';
+
+const useSocketSubscription = () => {
+  const [myCharacters, setMyCharacters] = useAtom(myCharactersAtom);
+
+  useEffect(() => {
+    console.log('listen to updateMyCharacters');
+    socket.on('updateMyCharacters', (character: any) => {
+      console.log('updateMyCharacters', character);
+      setMyCharacters([...((myCharacters as any) || []), 'foo']);
+    });
+
+    return () => {
+      socket.off('updateMyCharacters');
+    };
+  }, []);
+};
 
 export const CharacterList = () => {
   const { loading, error, data } = useQuery(GET_FREE_CHARACTERS);
   const [showForm, setShowForm] = useState<number>();
+  useSocketSubscription();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;

@@ -57,14 +57,13 @@ export const ACTION_FIELDS = gql`
 export const CHARACTER_FIELDS = gql`
   ${STATS_FIELDS}
   ${TILE_FIELDS}
-  ${ACTION_FIELDS}
   fragment CharacterFields on Character {
     id
     userId
 
     actionId
     action {
-      ...ActionFields
+      id
     }
     tileId
     tile {

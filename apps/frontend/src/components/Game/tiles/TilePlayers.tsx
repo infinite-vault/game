@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai';
 import { authAtom } from '../../../store/authState';
-import { CharacterWithRelations } from '../../../types/Character';
+import { CharacterWithRelations } from '../../../types/CharacterWithRelations';
 import { TilePlayer } from './TilePlayer';
 
 interface TilePlayersProps {

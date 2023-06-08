@@ -1,7 +1,7 @@
 import { Prisma } from 'database';
 
 export type CharacterWithRelations = Prisma.CharacterGetPayload<{
-  include: { stats: true; tile: true };
+  include: { action: true; stats: true; tile: true };
 }>;
 
 export enum CharacterConnection {

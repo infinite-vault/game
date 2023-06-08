@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { TILE_FIELDS, ACTION_FIELDS } from './fragments';
+import { TILE_FIELDS, ACTION_FIELDS, CHARACTER_FIELDS } from './fragments';
 
 export const UPDATE_GAME_SUBSCRIPTION = gql`
   subscription UpdateGameSubscription($gameId: String!) {
@@ -11,15 +11,10 @@ export const UPDATE_GAME_SUBSCRIPTION = gql`
 `;
 
 export const UPDATE_PLAYER_SUBSCRIPTION = gql`
-  ${TILE_FIELDS}
+  ${CHARACTER_FIELDS}
   subscription UpdatePlayerSubscription($gameId: String!) {
     updatePlayer(gameId: $gameId) {
-      id
-      connection
-      tileId
-      tile {
-        ...TileFields
-      }
+      ...CharacterFields
     }
   }
 `;

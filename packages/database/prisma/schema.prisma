@@ -3,18 +3,19 @@
 
 generator client {
   provider = "prisma-client-js"
+  output = "../generated/prisma-client"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 
 enum ActionType {
-  ATTACK
-  DEFEND
-  FIGHT
+  PENDING
+  QUEUED
+  DRAMA
 }
 
 enum TileType {
@@ -104,6 +105,7 @@ model Tile {
   type        TileType  @default(EMPTY)
   x           Int       @default(0)
   y           Int       @default(0)
+  background  String    
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt @default(now())
@@ -112,12 +114,13 @@ model Tile {
 }
 
 model Action {
-  id          Int       @id @default(autoincrement())
-  game        Game     @relation(fields: [gameId], references: [id])
-  gameId      String
+  id            Int       @id @default(autoincrement())
+  game          Game     @relation(fields: [gameId], references: [id])
+  gameId        String
 
-  characters  Character[]
-  type        ActionType 
+  characters    Character[]
+  type          ActionType 
+  executionTime DateTime? 
 
   round         Json        @default("{}")
   diff          Json        @default("{}")

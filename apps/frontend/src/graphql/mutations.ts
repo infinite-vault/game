@@ -54,7 +54,7 @@ export const MOVE_TO = gql`
 `;
 
 export const ATTACK = gql`
-  mutation Attack($fightId: Int!) {
-    attack(fightId: $fightId)
+  mutation Attack($actionId: Int!) {
+    attack(actionId: $actionId)
   }
 `;

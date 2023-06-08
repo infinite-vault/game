@@ -33,9 +33,10 @@ export const enemyWasDefeated = async (
           ep: { increment: damage },
         },
       },
-      nextAction: NextAction.MOVE,
+      // nextAction: NextAction.MOVE,
     });
 
-    await updateTile(f.tile?.id as number, { type: 'defeated' });
+    // Todo: update/create tile type enum
+    await updateTile(f.tile?.id as number, { type: 'DEFEATED' });
   }
 };

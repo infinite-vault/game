@@ -1,5 +1,6 @@
 import { Queue, Worker } from 'bullmq';
 
+// TODO: Add redis connection explicitly
 export const myQueue = new Queue('stats');
 
 export const worker = new Worker('stats', async (job) => {

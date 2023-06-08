@@ -6,10 +6,12 @@
   "compilerOptions": {
     "rootDirs": ["src"],
     "outDir": "dist",
-    "lib": ["esnext", "dom"],
-    "target": "es6",
+    "lib": ["es2021"],
+    "target": "es2021",
     "module": "commonjs",
     "moduleResolution": "node",
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   }
 }

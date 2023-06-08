@@ -23,7 +23,7 @@ export const GameList = () => {
               <Box
                 sx={{ cursor: 'pointer', color: 'blue' }}
                 component="span"
-                onClick={() => navigator.clipboard.writeText(c.id)}
+                onClick={() => navigator.clipboard.writeText(c.id as string)}
               >{`${c.id}`}</Box>
               )
               <Box>
@@ -34,6 +34,7 @@ export const GameList = () => {
               <ul>
                 {c.characters?.length ? (
                   [...c.characters]
+                    .filter((c) => c.isNpc !== true)
                     .sort((a: any, b: any) => {
                       if (a.name < b.name) {
                         return -1;
@@ -52,6 +53,7 @@ export const GameList = () => {
                   <p>Keine Spieler in dieser Gruppe</p>
                 )}
               </ul>
+              <div>{c.characters.filter((c: any) => c.isNpc === true).length} Monster online</div>
             </li>
           ))}
         </ul>

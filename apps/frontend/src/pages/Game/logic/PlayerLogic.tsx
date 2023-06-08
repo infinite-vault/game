@@ -7,6 +7,7 @@ import { useAtomValue } from 'jotai';
 import { navAtom } from '../../../store/navState';
 import { NavState } from '../../../types/NavState';
 import { ContentContainer } from '../../../components/Navigation/ContentContainer';
+import { merge } from 'lodash';
 
 interface PlayerLogicProps {
   gameId: string;
@@ -27,30 +28,30 @@ export const PlayerLogic = ({ gameId }: PlayerLogicProps) => {
       subscribeToMore({
         document: UPDATE_PLAYER_SUBSCRIPTION,
         variables: { gameId },
-        // updateQuery: (prev, { subscriptionData }) => {
-        //   if (!Object.keys(prev || {}).length) {
-        //     return { players: [] };
-        //   }
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!Object.keys(prev || {}).length) {
+            return { players: [] };
+          }
 
-        //   if (!subscriptionData.data?.updatePlayer) {
-        //     return prev;
-        //   }
+          if (!subscriptionData.data?.updatePlayer) {
+            return prev;
+          }
 
-        //   const updatePlayer = subscriptionData.data.updatePlayer as any;
-        //   const isNewPlayer =
-        //     prev.players.findIndex((player: any) => player.id === updatePlayer.id) === -1;
-        //   const updatedPlayers = prev.players.map((char: any) =>
-        //     char.id === updatePlayer.id ? merge({}, char, updatePlayer) : char,
-        //   );
+          const updatePlayer = subscriptionData.data.updatePlayer as any;
+          const isNewPlayer =
+            prev.players.findIndex((player: any) => player.id === updatePlayer.id) === -1;
+          const updatedPlayers = prev.players.map((char: any) =>
+            char.id === updatePlayer.id ? merge({}, char, updatePlayer) : char,
+          );
 
-        //   if (isNewPlayer) {
-        //     updatedPlayers.push(updatePlayer);
-        //   }
+          if (isNewPlayer) {
+            updatedPlayers.push(updatePlayer);
+          }
 
-        //   return {
-        //     players: updatedPlayers,
-        //   };
-        // },
+          return {
+            players: updatedPlayers,
+          };
+        },
       });
     }
   }, [subscribeToMore]);

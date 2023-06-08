@@ -12,15 +12,16 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { getJwtPayload } from './auth/getJwtPayload';
 import { resolvers } from './graphql/resolvers/resolvers';
+import { typeDefs } from './graphql/typeDefs';
 import { GraphQLError } from 'graphql';
 import { login } from './middleware/login';
 import { logout } from './middleware/logout';
-import { typeDefs } from 'database';
+import { Server } from 'socket.io';
+import { initSocketListeners } from './sockets/initSocketListeners';
 
 import './bull/bull';
 
 dotenv.config();
-
 console.log('NODE_ENV', process.env.NODE_ENV);
 
 const PORT = parseInt(process.env.API_PORT || '8080');
@@ -28,6 +29,16 @@ const app = express();
 const httpServer = createServer(app);
 
 app.disable('x-powered-by');
+
+// export const io = new Server(httpServer, {
+export const io = new Server(4001, {
+  // cors: { origin: process.env.CORS_ORIGIN || 'http://localhost:3000', credentials: true },
+  // cors: { origin: 'http://localhost:3000', credentials: true },
+  cors: { origin: 'http://localhost:3000' },
+  pingTimeout: 5000,
+  pingInterval: 11000,
+  cookie: true,
+});
 
 const wsServer = new WebSocketServer({
   server: httpServer,
@@ -97,6 +108,8 @@ const server = new ApolloServer({
 
   app.post('/login', login);
   app.get('/logout', logout);
+
+  initSocketListeners(io);
 
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server listening on port: ${PORT}`);

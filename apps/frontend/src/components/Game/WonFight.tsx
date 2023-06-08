@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import { GET_PLAYERS } from '../../graphql/queries';
 import { useMyCharacter } from '../../hooks/useMyCharacter';
-import { Character } from '../../types/Character';
+import { Character } from '../../types/CharacterWithRelations';
 import { Fight as FightType } from '../../types/Fight';
 import { FightHistory } from './FightHistory';
 

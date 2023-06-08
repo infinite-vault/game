@@ -11,40 +11,40 @@ import { updateFight } from '../../helpers/updateFight';
 import { enemyStrikesBack } from './enemyStrikesBack';
 import { enemyWasDefeated } from './enemyWasDefeated';
 
-export const attack = async (_: any, { fightId }: any, { userId }: any) => {
+export const attack = async (_: any, { actionId }: any, { userId }: any) => {
   // TODO: check user id
-  console.log('security check', userId);
+  // console.log('security check', userId);
 
-  let fight = await getFight(fightId);
+  // let fight = await getFight(fightId);
 
-  // TODO: use attack config here
-  const { diceMax } = settings.attack;
-  const dice = getRandomInt(0, diceMax);
-  const damage = damageByStrength(fight.character?.stats?.strength as number, dice / diceMax);
+  // // TODO: use attack config here
+  // const { diceMax } = settings.attack;
+  // const dice = getRandomInt(0, diceMax);
+  // const damage = damageByStrength(fight.character?.stats?.strength as number, dice / diceMax);
 
-  const playerAttack = { weapon: 'sword', dice, diceMax, damage };
+  // const playerAttack = { weapon: 'sword', dice, diceMax, damage };
 
-  fight = await updateFight(fightId, { attack: playerAttack, diff: Prisma.JsonNull }, false);
+  // fight = await updateFight(fightId, { attack: playerAttack, diff: Prisma.JsonNull }, false);
 
-  // TODO: refactor into smaller/more performant function
-  const fights = await getAllActiveFightsByEnemy(fight.enemyId as number);
-  const enemy = fight.enemy;
+  // // TODO: refactor into smaller/more performant function
+  // const fights = await getAllActiveFightsByEnemy(fight.enemyId as number);
+  // const enemy = fight.enemy;
 
-  if (!fight || !fights || !enemy) {
-    throw new GraphQLError('NOT_FOUND');
-  }
+  // if (!fight || !fights || !enemy) {
+  //   throw new GraphQLError('NOT_FOUND');
+  // }
 
-  const allFightsReady = fights.every((f) => f.attack);
+  // const allFightsReady = fights.every((f) => f.attack);
 
-  if (allFightsReady) {
-    for (const f of fights) {
-      await updateFight(f.id, { isPending: true });
-    }
+  // if (allFightsReady) {
+  //   for (const f of fights) {
+  //     await updateFight(f.id, { isPending: true });
+  //   }
 
-    setTimeout(() => finalizeAttack(enemy.id), 4000);
-  } else {
-    pubsub.publish(PublishKey.UPDATE_ACTION, { updateFight: { ...fight } });
-  }
+  //   setTimeout(() => finalizeAttack(enemy.id), 4000);
+  // } else {
+  //   pubsub.publish(PublishKey.UPDATE_ACTION, { updateFight: { ...fight } });
+  // }
 
   return true;
 };

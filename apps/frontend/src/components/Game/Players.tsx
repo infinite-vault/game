@@ -7,7 +7,7 @@ import { SET_GAME_STATE } from '../../graphql/mutations';
 import { useMyCharacter } from '../../hooks/useMyCharacter';
 import { RoutePaths } from '../../routing/AppRoutes';
 import { stageAtom } from '../../store/stageState';
-import { CharacterConnection, CharacterWithRelations } from '../../types/Character';
+import { CharacterConnection, CharacterWithRelations } from '../../types/CharacterWithRelations';
 import { getCoordinate } from '../../utils/getCoordinate';
 import { sortByName } from '../../utils/sortByName';
 import { TILE_LENGTH_HALF } from '../../pages/Game/logic/TileLogic';

@@ -7,7 +7,9 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   minify: false,
   sourcemap: true,
+  // treeshake: false,
   // external: ['apollo-server-core', 'express'],
-  // external: [/generated/],
-  // noExternal: [],
+  // noExternal: [/generated/],
+  external: [/generated/, 'graphql', 'graphql-tag'],
+  // noExternal: ['@prisma/client'],
 });

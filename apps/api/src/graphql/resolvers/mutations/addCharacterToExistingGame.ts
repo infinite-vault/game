@@ -1,20 +1,45 @@
 import { prisma } from '../../../prisma/prismaClient';
 
 export const addCharacterToExistingGame = async (_: any, { characterId, code }: any) => {
-  // TODO: Check first if user has already a character in this group
+  // TODO: Check first if USER has already a character in this group
+  // is only one character per USER allowed?
 
-  const game = await prisma.game.update({
-    where: {
-      id: code,
-    },
-    data: {
-      characters: {
-        connect: {
-          id: characterId,
+  return await prisma.$transaction(async (tx) => {
+    const game = await tx.game.update({
+      where: {
+        id: code,
+      },
+      data: {
+        characters: {
+          connect: {
+            id: characterId,
+          },
         },
       },
-    },
-  });
+    });
 
-  return game;
+    await tx.character.update({
+      where: {
+        id: characterId,
+      },
+      data: {
+        game: {
+          connect: {
+            id: game.id,
+          },
+        },
+        tile: {
+          connect: {
+            gameId_x_y: {
+              gameId: game.id,
+              x: 0,
+              y: 0,
+            },
+          },
+        },
+      },
+    });
+
+    return game;
+  });
 };

@@ -3,24 +3,25 @@ import { Box, Button, Divider, Typography } from '@mui/material';
 import { ATTACK } from '../../graphql/mutations';
 import { GET_PLAYERS } from '../../graphql/queries';
 import { useMyCharacter } from '../../hooks/useMyCharacter';
-import { Character } from '../../types/Character';
-import { Fight as FightType } from '../../types/Fight';
+import { CharacterWithRelations } from '../../types/CharacterWithRelations';
+import { ActionWithRelations } from '../../types/ActionWithRelations';
 
-interface ActiveFightProps {
-  fights: FightType[];
+interface PendingActionProps {
+  action: ActionWithRelations;
+  gameId: string;
 }
 
-export const ActiveFight = ({ fights }: ActiveFightProps) => {
+export const PendingAction = ({ action, gameId }: PendingActionProps) => {
   const [attack] = useMutation(ATTACK);
   const { data: playersData } = useQuery(GET_PLAYERS, {
-    variables: { gameId: fights[0].gameId },
+    variables: { gameId: gameId },
     fetchPolicy: 'cache-only',
   });
 
-  const players = playersData?.players as Character[];
+  const players = playersData?.players as CharacterWithRelations[];
   const me = useMyCharacter(players);
 
-  console.log('ActiveFight', { playersData, fights });
+  console.log('ActiveFight', { playersData, action, me });
 
   if (!players) {
     return null;
@@ -31,8 +32,14 @@ export const ActiveFight = ({ fights }: ActiveFightProps) => {
   return (
     <Box>
       <Box sx={{ mt: '20px' }}>
-        <Box>
-          Monster Stats: HP: {fights[0].enemy.stats.hp}/{fights[0].enemy.stats.hpMax}, MANA, KONDITION
+        <Box>NPC + Stats</Box>
+        <Box>Player + Stats</Box>
+        <Button variant="outlined" onClick={() => attack({ variables: { actionId: action.id } })}>
+          Attack
+        </Button>
+        {/* <Box>
+          Monster Stats: HP: {fights[0].enemy.stats.hp}/{fights[0].enemy.stats.hpMax}, MANA,
+          KONDITION
         </Box>
 
         <Divider />
@@ -50,13 +57,18 @@ export const ActiveFight = ({ fights }: ActiveFightProps) => {
                 My Stats: EP: {me?.stats.ep}, HP: {me?.stats.hp}/{me?.stats.hpMax}, MANA, KONDITION
               </Box>
               <Box>Ausrüstungswahl: Schwert, Bogen, Zauber...</Box>
-              {fight.isPending && <Box>Fight is happening right now with lots of blood and broken bones!!!</Box>}
+              {fight.isPending && (
+                <Box>Fight is happening right now with lots of blood and broken bones!!!</Box>
+              )}
               {fight.diff && <Box>Diff: {JSON.stringify(fight.diff)}</Box>}
               <Divider />
-              {/* TODO: disable buttons while attack is loading */}
               {isMe && !fight.attack ? (
                 <Box sx={{ py: '10px' }}>
-                  <Button onClick={() => attack({ variables: { fightId: fight.id } })} variant="contained" size="small">
+                  <Button
+                    onClick={() => attack({ variables: { fightId: fight.id } })}
+                    variant="contained"
+                    size="small"
+                  >
                     Attacke
                   </Button>
                 </Box>
@@ -68,8 +80,7 @@ export const ActiveFight = ({ fights }: ActiveFightProps) => {
           ) : (
             <Box>Player nicht gefunden</Box>
           );
-        })}
-
+        })} */}
         {/* {loading ? (
           <Box>Loading...</Box>
         ) : (
@@ -82,9 +93,7 @@ export const ActiveFight = ({ fights }: ActiveFightProps) => {
             </Button>
           </Box>
         )} */}
-
         <Divider />
-
         {/* <FightHistory history={fight.history} /> */}
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { Enemy, Prisma, Stats } from 'database';
+import { Prisma, Stats } from 'database';
 import { settings } from '../../../../config/settings';
 import { NextAction } from '../../../../types/NextAction';
 import { damageByStrength } from '../../../../utils/damageByStrength';
@@ -8,7 +8,7 @@ import { updateCharacter } from '../../helpers/updateCharacter';
 import { updateEnemy } from '../../helpers/updateEnemy';
 import { updateFight } from '../../helpers/updateFight';
 
-export const enemyStrikesBack = async (enemy: Enemy & { stats: Stats }, playerDamage: number, fights: any) => {
+export const enemyStrikesBack = async (enemy: any, playerDamage: number, fights: any) => {
   const { diceMax } = settings.attack;
   const diceEnemy = getRandomInt(0, diceMax);
   const damageEnemy = damageByStrength(enemy?.stats?.strength as number, diceEnemy / diceMax);
@@ -78,6 +78,6 @@ export const enemyStrikesBack = async (enemy: Enemy & { stats: Stats }, playerDa
 
     // TODO: send only a single update to all fights and characters
     await updateFight(f.id, fightData as any);
-    await updateCharacter(f.character?.userId as string, f.character?.gameId as string, playerData as any);
+    // await updateCharacter(f.character?.userId as string, f.character?.gameId as string, playerData as any);
   }
 };

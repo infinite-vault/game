@@ -1,10 +1,10 @@
-import { useMutation, useQuery } from '@apollo/client';
 import { Box, Button, Divider, Typography } from '@mui/material';
-import { ATTACK } from '../../graphql/mutations';
-import { GET_PLAYERS } from '../../graphql/queries';
 import { useMyCharacter } from '../../hooks/useMyCharacter';
-import { CharacterWithRelations } from '../../types/CharacterWithRelations';
 import { ActionWithRelations } from '../../types/ActionWithRelations';
+import { useAtomValue } from 'jotai';
+import { charactersAtom } from '../../store/game/charactersAtom';
+import useAxios from 'axios-hooks';
+import { ApiPath } from 'types';
 
 interface PendingActionProps {
   action: ActionWithRelations;
@@ -12,31 +12,39 @@ interface PendingActionProps {
 }
 
 export const PendingAction = ({ action, gameId }: PendingActionProps) => {
-  const [attack] = useMutation(ATTACK);
-  const { data: playersData } = useQuery(GET_PLAYERS, {
-    variables: { gameId: gameId },
-    fetchPolicy: 'cache-only',
-  });
+  const characters = useAtomValue(charactersAtom);
+  const me = useMyCharacter(characters);
+  const [_, execute] = useAxios(
+    { url: ApiPath.PREPARE_ATTACK, params: { actionId: action.id, gameId } },
+    {
+      manual: true,
+    },
+  );
 
-  const players = playersData?.players as CharacterWithRelations[];
-  const me = useMyCharacter(players);
+  console.log('ActiveFight', { characters, action, me });
 
-  console.log('ActiveFight', { playersData, action, me });
-
-  if (!players) {
+  if (!characters) {
     return null;
   }
-
-  const getPlayer = (id: number) => players.find((player) => player.id === id);
 
   return (
     <Box>
       <Box sx={{ mt: '20px' }}>
         <Box>NPC + Stats</Box>
         <Box>Player + Stats</Box>
-        <Button variant="outlined" onClick={() => attack({ variables: { actionId: action.id } })}>
-          Attack
-        </Button>
+
+        {action.type === 'PENDING' ? (
+          <Button variant="outlined" onClick={() => execute()}>
+            Attack
+          </Button>
+        ) : null}
+
+        {action.type === 'OVER' ? (
+          <Box>
+            <Typography>Fight is over</Typography>
+          </Box>
+        ) : null}
+
         {/* <Box>
           Monster Stats: HP: {fights[0].enemy.stats.hp}/{fights[0].enemy.stats.hpMax}, MANA,
           KONDITION

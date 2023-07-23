@@ -1,12 +1,20 @@
-import { useMutation } from '@apollo/client';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { ADD_CHARACTER } from '../../graphql/mutations';
-import { GET_FREE_CHARACTERS } from '../../graphql/queries';
+import useAxios from 'axios-hooks';
+import { ApiPath } from 'types';
+import { refetchFreeCharactersAtom } from '../../store/freeCharactersState';
+import { useSetAtom } from 'jotai';
 
 export const AddCharacter = () => {
   const [name, setName] = useState('');
-  const [addCharacter, { loading, error }] = useMutation(ADD_CHARACTER);
+  const refreshFreeCharacters = useSetAtom(refetchFreeCharactersAtom);
+  const [{ loading, error }, addCharacter] = useAxios(
+    {
+      url: ApiPath.ADD_CHARACTER,
+      method: 'POST',
+    },
+    { manual: true },
+  );
 
   if (loading) return <Box>Submitting...</Box>;
   if (error) return <Box>Submission error! {error.message}</Box>;
@@ -17,7 +25,10 @@ export const AddCharacter = () => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    addCharacter({ variables: { name }, refetchQueries: [{ query: GET_FREE_CHARACTERS }] });
+    addCharacter({ data: { name } }).then(() => {
+      refreshFreeCharacters();
+    });
+    setName('');
   };
 
   return (
@@ -26,7 +37,7 @@ export const AddCharacter = () => {
 
       <form onSubmit={handleSubmit}>
         <TextField label="Name" value={name} onChange={handleChange} />
-        <Button variant="outlined" disabled={!name.length || loading} type="submit">
+        <Button variant="outlined" disabled={!name.length} type="submit">
           Erstellen
         </Button>
       </form>

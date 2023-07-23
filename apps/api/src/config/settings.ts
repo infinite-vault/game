@@ -8,7 +8,7 @@ export const settings = {
   },
   attack: {
     diceMax: 20,
-    delayMs: 3500,
+    delayMs: 5000,
   },
   tiles: [
     {

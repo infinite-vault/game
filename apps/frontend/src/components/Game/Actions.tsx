@@ -1,16 +1,13 @@
-import { Prisma } from 'database';
 import { StatsDiff } from './utils/getStatsDiff';
 import { Box, Typography } from '@mui/material';
 import { useMyCharacter } from '../../hooks/useMyCharacter';
-import { useQuery } from '@apollo/client';
-import { GET_PLAYERS } from '../../graphql/queries';
 import { ActionWithRelations } from '../../types/ActionWithRelations';
-import { CharacterWithRelations } from '../../types/CharacterWithRelations';
-import { memo, useMemo } from 'react';
+import { charactersAtom } from '../../store/game/charactersAtom';
+import { useAtomValue } from 'jotai';
+import { actionsAtom } from '../../store/game/actionsAtom';
 import { PendingAction } from './PendingAction';
 
 interface ActionsProps {
-  actions: ActionWithRelations[];
   gameId: string;
 }
 
@@ -23,14 +20,10 @@ export interface ActionDiff {
   [key: number]: StatsDiff;
 }
 
-export const Actions = ({ actions, gameId }: ActionsProps) => {
-  const { data: playersData } = useQuery(GET_PLAYERS, {
-    variables: { gameId },
-    fetchPolicy: 'cache-only',
-  });
-
-  const players = playersData?.players as CharacterWithRelations[];
-  const me = useMyCharacter(players);
+export const Actions = ({ gameId }: ActionsProps) => {
+  const actions = useAtomValue(actionsAtom);
+  const characters = useAtomValue(charactersAtom);
+  const me = useMyCharacter(characters);
 
   // const renderGroupedFights = () => {
   //   const groupedFightsByEnemy = groupBy(actions, ({ enemy: { id } }: any) => id);
@@ -52,6 +45,7 @@ export const Actions = ({ actions, gameId }: ActionsProps) => {
   const { myAction, otherActions } = actions.reduce(
     (acc, action) => {
       const isMe = me && action.characters.some((character) => character.id === me.id);
+
       if (isMe) {
         acc['myAction'] = action;
       } else {
@@ -63,13 +57,14 @@ export const Actions = ({ actions, gameId }: ActionsProps) => {
     { myAction: null, otherActions: [] } as ActionSplit,
   );
 
-  if (!players || !me) {
+  if (!characters?.length || !me) {
     return null;
   }
 
   return (
     <Box>
       <Typography>It's fight time!!!</Typography>
+
       {myAction ? <PendingAction action={myAction} gameId={gameId} /> : null}
 
       {otherActions.length > 0 ? (
@@ -82,7 +77,6 @@ export const Actions = ({ actions, gameId }: ActionsProps) => {
           </ul>
         </Box>
       ) : null}
-      {/* {renderGroupedFights()} */}
     </Box>
   );
 };

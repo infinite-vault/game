@@ -1,8 +1,10 @@
-import { useMutation } from '@apollo/client';
 import { Box, Button, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
-import { ADD_CHARACTER_TO_EXISTING_GAME } from '../../../graphql/mutations';
-import { GET_FREE_CHARACTERS, GET_GAMES } from '../../../graphql/queries';
+import { useSetAtom } from 'jotai';
+import { ApiPath } from 'types';
+import useAxios from 'axios-hooks';
+import { refetchFreeCharactersAtom } from '../../../store/freeCharactersState';
+import { refetchMyGamesAtom } from '../../../store/myGamesState';
 
 interface AddCharacterToExistingGame {
   characterId: number;
@@ -10,11 +12,18 @@ interface AddCharacterToExistingGame {
 
 export const AddCharToExistingGame = ({ characterId }: AddCharacterToExistingGame) => {
   const [code, setCode] = useState('');
-  const [addCharToExistingGame, { loading, error }] = useMutation(ADD_CHARACTER_TO_EXISTING_GAME);
+  const refetchFreeCharacters = useSetAtom(refetchFreeCharactersAtom);
+  const refetchMyGames = useSetAtom(refetchMyGamesAtom);
+  const [{ loading, error }, addCharacterToExistingGame] = useAxios(
+    {
+      url: ApiPath.ADD_CHARACTER_TO_EXISTING_GAME,
+      method: 'POST',
+    },
+    { manual: true },
+  );
 
-  if (error) {
-    return <Box>Shit happens</Box>;
-  }
+  if (loading) return <Box>Submitting...</Box>;
+  if (error) return <Box>Submission error! {error.message}</Box>;
 
   const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCode(event.target.value);
@@ -23,9 +32,11 @@ export const AddCharToExistingGame = ({ characterId }: AddCharacterToExistingGam
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    addCharToExistingGame({
-      variables: { code, characterId },
-      refetchQueries: [{ query: GET_FREE_CHARACTERS }, { query: GET_GAMES }],
+    addCharacterToExistingGame({
+      data: { code, characterId },
+    }).then(() => {
+      refetchFreeCharacters();
+      refetchMyGames();
     });
   };
 

@@ -1,18 +1,23 @@
 import { Queue, Worker } from 'bullmq';
+import { startFight } from '../api/handlers/mutations/startFight';
+
+enum QueueNames {
+  ACTIONS = 'actions',
+}
 
 // TODO: Add redis connection explicitly
-export const myQueue = new Queue('stats');
-
-export const worker = new Worker('stats', async (job) => {
-  console.log(job.data);
+export const actionQueue = new Queue(QueueNames.ACTIONS);
+export const actionWorker = new Worker(QueueNames.ACTIONS, async (job) => {
+  console.log('start fight', job.data);
+  await startFight(job.data);
 });
 
-worker.on('completed', (job) => {
-  console.log(`${job.id} has completed!`);
-});
+// actionWorker.on('completed', (job) => {
+//   console.log(`${job.id} has completed!`);
+// });
 
-worker.on('failed', (job, err) => {
-  console.log(`${job?.id} has failed with ${err.message}`);
-});
+// actionWorker.on('failed', (job, err) => {
+//   console.log(`${job?.id} has failed with ${err.message}`);
+// });
 
-// await myQueue.add('myJobName', { id: gameId }, { delay: 10000 });
+// await actionQueue.add('myJobName', { id: gameId }, { delay: 10000 });

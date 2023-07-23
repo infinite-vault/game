@@ -5,3 +5,5 @@ export const getServerHttpUrl = () =>
   `${import.meta.env.MODE === 'production' ? 'https' : 'http'}://${
     import.meta.env.VITE_APP_BE_DOMAIN
   }`;
+
+export const getApiUrl = (path: string) => `${getServerHttpUrl()}${path}`;

@@ -12,7 +12,9 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
+    "source.fixAll.eslint": true
   },
   "gitlens.hovers.enabled": false,
+  "editor.hover.delay": 500,
+  "tabby.usage.anonymousUsageTracking": true
 }

@@ -1,65 +1,115 @@
-import { useMutation } from '@apollo/client';
-import { Box } from '@mui/material';
-import { useEffect } from 'react';
+import { Box, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { END_GAME } from '../../graphql/mutations';
-import { RoutePaths } from '../../routing/AppRoutes';
-import { GameLogic } from './logic/GameLogic';
-import { PlayerStageLogic } from './logic/PlayerStageLogic';
+import { CharacterStageLogic } from './logic/PlayerStageLogic';
 import { ActionLogic } from './logic/ActionLogic';
 import { StageLogic } from './logic/StageLogic';
-import { PlayerLogic } from './logic/PlayerLogic';
+import { CharacterLogic } from './logic/PlayerLogic';
 import { TileLogic } from './logic/TileLogic';
 import { Navigation } from '../../components/Navigation/Navigation';
+import { useAtomValue } from 'jotai';
+import { navAtom } from '../../store/navState';
+import { Suspense, useEffect } from 'react';
+import { ApiPath, SocketEvent } from 'types';
+import { GameState, useGameState } from '../../hooks/useGameState';
+import { useSync } from '../../hooks/useSync';
+import { Character, Tile } from 'database';
+import { charactersAtom } from '../../store/game/charactersAtom';
+import { actionsAtom } from '../../store/game/actionsAtom';
+import { tilesAtom } from '../../store/game/tilesAtom';
+import { RoutePaths } from '../../routing/AppRoutes';
+import { ActionWithRelations } from '../../types/ActionWithRelations';
+import { gameAtom } from '../../store/game/gameState';
+
+interface GameProps {
+  gameId: string;
+}
 
 export const GamePage = () => {
-  const { gameId } = useParams();
   const navigate = useNavigate();
-
-  if (!gameId) {
-    navigate(RoutePaths.DASHBOARD);
-    return null;
-  }
-
-  const [endGame] = useMutation(END_GAME);
-  // useSubscription(TRIGGER_REFETCH_SUBSCRIPTION, {
-  //   onData: ({ data: d }: any) => {
-  //     console.info('refetchSubscription', { d });
-
-  //     if (d.refetch?.query) {
-  //       apolloClient.refetchQueries({ include: [d.refetch.query] });
-  //     }
-  //   },
-  // });
+  const { gameId = '' } = useParams();
+  const { gameState } = useGameState(gameId);
 
   useEffect(() => {
-    const endGameCallback = async () => {
-      try {
-        await endGame({ variables: { gameId } });
-      } catch (err) {
-        console.error('error ending game', err);
-      }
-    };
+    if (!gameId) {
+      navigate(RoutePaths.DASHBOARD);
+    }
+  }, [gameId]);
 
-    window.addEventListener('beforeunload', endGameCallback);
+  if (gameState === GameState.OFFLINE) {
+    return <Box>Connection lost</Box>;
+  }
 
-    return () => {
-      window.removeEventListener('beforeunload', endGameCallback);
-      endGameCallback();
-    };
-  }, []);
+  return <Game gameId={gameId} />;
+};
+
+const Game = ({ gameId }: GameProps) => {
+  const navState = useAtomValue(navAtom);
+  const game = useAtomValue(gameAtom);
+
+  useSync<Character>({
+    atom: charactersAtom,
+    url: ApiPath.GET_CHARACTERS_BY_GAME_ID,
+    params: { gameId },
+    socketEvent: SocketEvent.CHARACTER_UPDATE,
+    socketFullUpdateEvent: SocketEvent.CHARACTER_FULL_UPDATE,
+  });
+
+  useSync<Tile>({
+    atom: tilesAtom,
+    url: ApiPath.GET_TILES_BY_GAME_ID,
+    params: { gameId },
+    socketEvent: SocketEvent.TILE_UPDATE,
+    socketFullUpdateEvent: SocketEvent.TILE_FULL_UPDATE,
+  });
+
+  useSync<ActionWithRelations>({
+    atom: actionsAtom,
+    url: ApiPath.GET_ACTIONS_BY_GAME_ID,
+    params: { gameId },
+    socketEvent: SocketEvent.ACTION_UPDATE,
+    socketFullUpdateEvent: SocketEvent.ACTION_FULL_UPDATE,
+  });
+
+  // const [endGame] = useMutation(END_GAME);
+
+  // useEffect(() => {
+  //   const endGameCallback = async () => {
+  //     try {
+  //       await endGame({ variables: { gameId } });
+  //     } catch (err) {
+  //       console.error('error ending game', err);
+  //     }
+  //   };
+
+  //   window.addEventListener('beforeunload', endGameCallback);
+
+  //   return () => {
+  //     window.removeEventListener('beforeunload', endGameCallback);
+  //     endGameCallback();
+  //   };
+  // }, []);
 
   return (
     <Box sx={{ position: 'relative', backgroundColor: '#232a36' }}>
       <StageLogic>
-        <TileLogic gameId={gameId} />
-        <PlayerStageLogic gameId={gameId} />
+        <Suspense>
+          <TileLogic />
+        </Suspense>
+        <Suspense>
+          <CharacterStageLogic gameId={gameId} />
+        </Suspense>
       </StageLogic>
 
       <Navigation />
-      <GameLogic gameId={gameId} />
+
+      <Box sx={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)' }}>
+        <Typography>
+          {game?.name} - {navState}
+        </Typography>
+      </Box>
+
       <ActionLogic gameId={gameId} />
-      <PlayerLogic gameId={gameId} />
+      <CharacterLogic gameId={gameId} />
     </Box>
   );
 };

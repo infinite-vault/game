@@ -1,13 +1,11 @@
 import { io } from 'socket.io-client';
+import { SocketEvent } from 'types';
 
 export const socket = io(`ws://localhost:4001`, {
   autoConnect: false,
   reconnectionDelayMax: 10000,
   transports: ['websocket', 'polling'],
   withCredentials: true,
-  auth: {
-    gameId: 'gid-1234567890',
-  },
 });
 
 // export const connectSocket = (token = '') => {
@@ -22,10 +20,6 @@ export const socket = io(`ws://localhost:4001`, {
 socket.on('connect', () => {
   //   ts.start();
   console.log('socket connected');
-
-  setTimeout(() => {
-    socket.emit('hello');
-  }, 4000);
 });
 
 socket.on('disconnect', () => {
@@ -34,12 +28,4 @@ socket.on('disconnect', () => {
 
 socket.on('connect_error', (err) => {
   console.log('connect error', err.message);
-});
-
-socket.on('foo', () => {
-  console.log('foo');
-});
-
-socket.on('bar', () => {
-  console.log('bar');
 });

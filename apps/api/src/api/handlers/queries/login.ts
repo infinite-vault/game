@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { createJwt } from '../auth/createJwt';
-import { getJwtPayload } from '../auth/getJwtPayload';
-import { getUser } from '../prisma/queries/getUser';
+import { createJwt } from '../../../auth/createJwt';
+import { getJwtPayload } from '../../../auth/getJwtPayload';
+import { getUser } from '../../../prisma/queries/getUser';
 
 export const login = async (req: Request, res: Response) => {
   const isProduction = process.env.NODE_ENV === 'production';

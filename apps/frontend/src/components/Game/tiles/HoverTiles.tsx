@@ -1,9 +1,9 @@
-import { useMutation } from '@apollo/client';
 import { Vector2d } from 'konva/lib/types';
 import { Rect } from 'react-konva';
-import { MOVE_TO } from '../../../graphql/mutations';
 import { setStageCursor } from '../../../utils/setStageCursor';
 import { TILE_LENGTH, TILE_LENGTH_HALF } from '../../../pages/Game/logic/TileLogic';
+import { moveToTile } from '../../../api/moveToTile';
+import { useState } from 'react';
 
 interface HoverTilesProps {
   x: number;
@@ -18,11 +18,14 @@ const RenderHoverTiles = ({
   moveToY,
   gameId,
 }: Vector2d & { moveToX: number; moveToY: number; gameId: string }) => {
-  const [moveTo, { loading }] = useMutation(MOVE_TO);
+  const [isMoving, setMoving] = useState(false);
 
   const handleMoveToClick = () => {
-    if (!loading) {
-      moveTo({ variables: { x: moveToX, y: moveToY, gameId } });
+    if (!isMoving) {
+      setMoving(true);
+      moveToTile({ x: moveToX, y: moveToY, gameId }).then(() => {
+        setMoving(false);
+      });
     }
   };
 

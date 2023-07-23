@@ -1,25 +1,17 @@
-import { useQuery } from '@apollo/client';
-import { GET_PLAYERS } from '../../../graphql/queries';
-import { TilePlayers } from '../../../components/Game/tiles/TilePlayers';
+import { TileCharacters } from '../../../components/Game/tiles/TilePlayers';
+import { useAtomValue } from 'jotai';
+import { charactersAtom } from '../../../store/game/charactersAtom';
 
-interface PlayerStageLogicProps {
+interface CharacterStageLogicProps {
   gameId: string;
 }
 
-export const PlayerStageLogic = ({ gameId }: PlayerStageLogicProps) => {
-  const { data, loading, error } = useQuery(GET_PLAYERS, {
-    variables: { gameId },
-    fetchPolicy: 'cache-only',
-  });
-  const players = data?.players || [];
+export const CharacterStageLogic = ({ gameId }: CharacterStageLogicProps) => {
+  const characters = useAtomValue(charactersAtom);
 
-  if (loading || error || !players.length) {
-    if (error) {
-      console.error('PlayerStageLogic error', { error, gameId });
-    }
-
+  if (!characters?.length) {
     return null;
   }
 
-  return <TilePlayers players={players} gameId={gameId} />;
+  return <TileCharacters characters={characters} gameId={gameId} />;
 };

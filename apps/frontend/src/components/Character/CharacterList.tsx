@@ -1,37 +1,31 @@
-import { useQuery } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { GET_FREE_CHARACTERS } from '../../graphql/queries';
+import { useState } from 'react';
 import { AddCharacter } from './AddCharacter';
 import { AddCharToExistingGame } from './forms/AddCharToExistingGroup';
 import { AddCharToNewGame } from './forms/AddCharToNewGame';
-import { useAtom } from 'jotai';
-import { myCharactersAtom } from '../../store/myCharactersState';
-import { socket } from '../../sockets';
+import { useAtomValue } from 'jotai';
+import { freeCharactersAtom } from '../../store/freeCharactersState';
 
-const useSocketSubscription = () => {
-  const [myCharacters, setMyCharacters] = useAtom(myCharactersAtom);
+// const useSocketSubscription = () => {
+//   const [myCharacters, setMyCharacters] = useAtom(myCharactersAtom);
 
-  useEffect(() => {
-    console.log('listen to updateMyCharacters');
-    socket.on('updateMyCharacters', (character: any) => {
-      console.log('updateMyCharacters', character);
-      setMyCharacters([...((myCharacters as any) || []), 'foo']);
-    });
+//   useEffect(() => {
+//     console.log('listen to updateMyCharacters');
+//     socket.on('updateMyCharacters', (character: any) => {
+//       console.log('updateMyCharacters', character);
+//       setMyCharacters([...((myCharacters as any) || []), 'foo']);
+//     });
 
-    return () => {
-      socket.off('updateMyCharacters');
-    };
-  }, []);
-};
+//     return () => {
+//       socket.off('updateMyCharacters');
+//     };
+//   }, []);
+// };
 
 export const CharacterList = () => {
-  const { loading, error, data } = useQuery(GET_FREE_CHARACTERS);
+  const freeCharacters = useAtomValue(freeCharactersAtom);
   const [showForm, setShowForm] = useState<number>();
-  useSocketSubscription();
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
+  // useSocketSubscription();
 
   return (
     <Box>
@@ -39,9 +33,9 @@ export const CharacterList = () => {
 
       <AddCharacter />
 
-      {data?.freeCharacters?.length ? (
+      {freeCharacters?.length ? (
         <ul>
-          {data?.freeCharacters.map((c: any) => (
+          {freeCharacters.map((c: any) => (
             <li key={c.id}>
               {c.name} (
               <Typography
@@ -58,6 +52,7 @@ export const CharacterList = () => {
                     <Typography>Bestehende Gruppe (siehe Code)</Typography>
                     <AddCharToExistingGame characterId={c.id} />
                   </Box>
+
                   <Box sx={{ p: '4px' }}>
                     <Typography>Neue Gruppe erstellen</Typography>
                     <AddCharToNewGame characterId={c.id} />

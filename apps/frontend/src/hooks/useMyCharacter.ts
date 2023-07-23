@@ -1,12 +1,10 @@
 import { useAtomValue } from 'jotai';
 import { authAtom } from '../store/authState';
-import { CharacterWithRelations } from '../types/CharacterWithRelations';
+import { useMemo } from 'react';
+import { Character } from 'database';
 
-export const useMyCharacter = (
-  players: CharacterWithRelations[],
-): CharacterWithRelations | undefined => {
+export const useMyCharacter = (players: Character[] = []): Character | undefined => {
   const userId = useAtomValue(authAtom);
-  const isAllDataAvailable = userId && players?.length;
-
-  return isAllDataAvailable ? players.find((player) => player.userId === userId) : undefined;
+  const me = useMemo(() => players.find((player) => player.userId === userId), [players, userId]);
+  return me;
 };

@@ -14,8 +14,8 @@ datasource db {
 
 enum ActionType {
   PENDING
-  QUEUED
   DRAMA
+  OVER
 }
 
 enum TileType {
@@ -65,6 +65,7 @@ model Game {
   tiles       Tile[]  
   actions     Action[]
 
+  version     Int         @default(0) 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt @default(now())
 }
@@ -88,6 +89,7 @@ model Character {
   isNpc       Boolean       @default(false)
   isDefeated  Boolean       @default(false)
 
+  version     Int           @default(0) 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt @default(now())
   
@@ -107,6 +109,7 @@ model Tile {
   y           Int       @default(0)
   background  String    
 
+  version     Int         @default(0) 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt @default(now())
 
@@ -120,18 +123,15 @@ model Action {
 
   characters    Character[]
   type          ActionType 
-  executionTime DateTime? 
 
   round         Json        @default("{}")
   diff          Json        @default("{}")
   history       Json        @default("[]")
 
-  isOver        Boolean     @default(false)
-  isDeleted     Boolean     @default(false)
-
   tile        Tile       @relation(fields: [tileId], references: [id])
   tileId      Int 
 
+  version     Int         @default(0) 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt @default(now())
 }
@@ -161,6 +161,7 @@ model Stats {
   stepsDone     Int         @default(0)
   stepsMax      Int         @default(4)
 
+  version       Int         @default(0) 
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

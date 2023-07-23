@@ -4,20 +4,22 @@ import { useAtomValue } from 'jotai';
 import { GET_GAMES } from '../../graphql/queries';
 import { RoutePaths } from '../../routing/AppRoutes';
 import { authAtom } from '../../store/authState';
+import { myGamesAtom } from '../../store/myGamesState';
 
 export const GameList = () => {
-  const { loading, error, data } = useQuery(GET_GAMES);
+  // const { loading, error, data } = useQuery(GET_GAMES);
   const userId = useAtomValue(authAtom);
+  const games = useAtomValue(myGamesAtom);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error : {error.message}</p>;
 
   return (
     <Box>
       <Typography variant="h3">Gruppen</Typography>
-      {data?.games?.length ? (
+      {games?.length ? (
         <ul>
-          {data.games.map((c: any) => (
+          {games.map((c: any) => (
             <li key={c.id}>
               {c.name} (Code:{' '}
               <Box

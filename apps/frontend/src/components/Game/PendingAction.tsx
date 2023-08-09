@@ -5,6 +5,7 @@ import { useAtomValue } from 'jotai';
 import { charactersAtom } from '../../store/game/charactersAtom';
 import useAxios from 'axios-hooks';
 import { ApiPath } from 'types';
+import { epByLevel } from 'utils';
 
 interface PendingActionProps {
   action: ActionWithRelations;
@@ -30,8 +31,16 @@ export const PendingAction = ({ action, gameId }: PendingActionProps) => {
   return (
     <Box>
       <Box sx={{ mt: '20px' }}>
-        <Box>NPC + Stats</Box>
-        <Box>Player + Stats</Box>
+        <Box>NPC</Box>
+
+        <Box>
+          Player Level {me?.stats.level} - Exp {me?.stats.experience} /{' '}
+          {epByLevel((me?.stats.level as number) + 1)}
+        </Box>
+        <Box>
+          Hitpoints: {me?.stats.hitpoints} - Strength: {me?.stats.strength} - Mana: {me?.stats.mana}{' '}
+          -
+        </Box>
 
         {action.type === 'PENDING' ? (
           <Button variant="outlined" onClick={() => execute()}>
@@ -101,7 +110,6 @@ export const PendingAction = ({ action, gameId }: PendingActionProps) => {
             </Button>
           </Box>
         )} */}
-        <Divider />
         {/* <FightHistory history={fight.history} /> */}
       </Box>
     </Box>

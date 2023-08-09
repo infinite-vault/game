@@ -16,5 +16,5 @@
   },
   "gitlens.hovers.enabled": false,
   "editor.hover.delay": 500,
-  "tabby.usage.anonymousUsageTracking": true
+  "javascript.validate.enable": false
 }

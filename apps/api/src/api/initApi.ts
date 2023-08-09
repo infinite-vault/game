@@ -4,7 +4,7 @@ import { logout } from './handlers/queries/logout';
 import { ApiPath } from 'types';
 import { freeCharacters } from './handlers/queries/freeCharacters';
 import { isAuthenticated } from './middleware/isAuthenticated';
-import { addCharacter } from './handlers/queries/addCharacter';
+import { addCharacter } from './handlers/mutations/addCharacter';
 import { myGames } from './handlers/queries/myGames';
 import { addCharacterToNewGame } from './handlers/queries/addCharacterToNewGame';
 import { addCharacterToExistingGame } from './handlers/queries/addCharacterToExistingGame';

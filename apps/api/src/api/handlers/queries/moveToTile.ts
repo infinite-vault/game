@@ -6,6 +6,7 @@ import { createTile } from '../mutations/createTile';
 import { updateCharacter } from '../mutations/updateCharacter';
 import { io } from '../../..';
 import { SocketEvent } from 'types';
+import { CharacterStatus } from 'database';
 
 export const moveToTile = async (req: Request, res: Response) => {
   try {
@@ -18,7 +19,11 @@ export const moveToTile = async (req: Request, res: Response) => {
 
 const move = async (req: Request, res: Response) => {
   const { gameId, x, y } = req.body;
-  const userId = (req as any).userId;
+  const userId = req.userId;
+  if (!userId) {
+    throw new Error('USER_NOT_FOUND');
+  }
+
   const player = await getCharacter(userId, gameId);
 
   if (!player) {
@@ -66,7 +71,7 @@ const move = async (req: Request, res: Response) => {
       userId,
       gameId,
       {
-        connection: 'ONLINE',
+        status: CharacterStatus.ONLINE,
         tileId: tile.id,
         version: {
           increment: 1,

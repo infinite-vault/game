@@ -3,16 +3,16 @@ import { parse } from 'cookie';
 import { SocketEvent } from 'types';
 import { getCharacterById } from '../api/queries/getCharacterById';
 import { getTileById } from '../api/queries/getTileById';
-import { getActionsByGameId } from '../api/handlers/queries/getActionsByGameId';
 import { getActionById } from '../api/queries/getActionById';
+import { getJwtPayload } from '../auth/getJwtPayload';
 
 export const initSockets = (io: Server) => {
   io.use((socket, next) => {
-    console.log('socket use jwt', socket.handshake.headers.cookie);
     const cookies = parse(socket.handshake.headers.cookie || '');
+    const payload = getJwtPayload(cookies.jwt);
+    socket.data.userId = payload?.id;
 
-    // TODO: validate jwt
-    if (!cookies.jwt) {
+    if (!socket.data.userId) {
       return next(new Error('invalid jwt'));
     }
 
@@ -49,6 +49,7 @@ export const initSockets = (io: Server) => {
     });
 
     socket.on(SocketEvent.CHARACTER_FULL_UPDATE, async ({ id }) => {
+      console.log('###### SOCKET DATA ######', socket.data);
       const character = await getCharacterById(id);
       socket.emit(SocketEvent.CHARACTER_UPDATE, { data: character, isFullUpdate: true });
     });

@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { triggerFetchAtom } from '../store/triggerFetchState';
 import { ApiPath, SocketEvent } from 'types';
 import { socket } from '../sockets';
-import { Action, Character, Tile } from 'database';
-import { merge } from 'lodash';
+import { Character, Tile } from 'database';
+import merge from 'lodash/merge';
 import { ActionWithRelations } from '../types/ActionWithRelations';
 
 // TODO: add types for atoms

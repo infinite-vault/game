@@ -19,6 +19,7 @@ import { tilesAtom } from '../../store/game/tilesAtom';
 import { RoutePaths } from '../../routing/AppRoutes';
 import { ActionWithRelations } from '../../types/ActionWithRelations';
 import { gameAtom } from '../../store/game/gameState';
+import { CharacterWithRelations } from '../../types/CharacterWithRelations';
 
 interface GameProps {
   gameId: string;
@@ -46,7 +47,7 @@ const Game = ({ gameId }: GameProps) => {
   const navState = useAtomValue(navAtom);
   const game = useAtomValue(gameAtom);
 
-  useSync<Character>({
+  useSync<CharacterWithRelations>({
     atom: charactersAtom,
     url: ApiPath.GET_CHARACTERS_BY_GAME_ID,
     params: { gameId },

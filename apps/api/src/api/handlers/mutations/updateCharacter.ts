@@ -1,7 +1,5 @@
 import { Prisma, PrismaClient } from 'database';
 import { prisma } from '../../../prisma/prismaClient';
-import { pubsub } from '../../../pubsub';
-import { PublishKey } from '../../../types/PublishKey';
 
 export const updateCharacter = async (
   userId: string,

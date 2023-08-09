@@ -1,4 +1,4 @@
 import { atom } from 'jotai';
-import { Character } from 'database';
+import { CharacterWithRelations } from '../../types/CharacterWithRelations';
 
-export const charactersAtom = atom<Character[]>([]);
+export const charactersAtom = atom<CharacterWithRelations[]>([]);

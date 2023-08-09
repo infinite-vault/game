@@ -2,6 +2,8 @@ import { ActionType, Prisma, PrismaClient, TileType } from 'database';
 import { prisma } from '../../../prisma/prismaClient';
 import { getRandomInt } from '../../../utils/getRandomInt';
 import { settings } from '../../../config/settings';
+import { getRandomWeightedItem } from '../../../utils/getRandomWeightedItem';
+import { EnemyConfig } from '../../../config/enemies';
 
 export const createTile = async (
   gameId: string,
@@ -14,8 +16,8 @@ export const createTile = async (
   const possibleTiles = settings.tiles.filter((tile) => {
     const isInRange =
       tile.type !== TileType.START &&
-      (!tile.minDistance || tile.minDistance <= tileDistance) &&
-      (!tile.maxDistance || tile.maxDistance >= tileDistance);
+      (!tile.distance.min || tile.distance.min <= tileDistance) &&
+      (!tile.distance.max || tile.distance.max >= tileDistance);
     return isInRange;
   });
 
@@ -49,20 +51,33 @@ export const createTile = async (
     let enemy;
 
     if (isEnemy) {
+      if (!newTile.enemies?.length) {
+        throw new Error('no enemies defined');
+      }
+
+      const enemyConfig = getRandomWeightedItem<EnemyConfig>(newTile.enemies);
+
       enemy = await tx.character.create({
         data: {
           game: { connect: { id: gameId } },
-          name: newTile.enemy.name,
+          name: enemyConfig.name,
           avatar: 'monster',
           isNpc: true,
           stats: {
             create: {
-              level: getRandomInt(newTile.enemy.stats.levelMin, newTile.enemy.stats.levelMax),
-              hp: getRandomInt(newTile.enemy.stats.hpMin, newTile.enemy.stats.hpMax),
-              strength: getRandomInt(
-                newTile.enemy.stats.strengthMin,
-                newTile.enemy.stats.strengthMax,
-              ),
+              level: getRandomInt(enemyConfig.level.min, enemyConfig.level.max),
+              hitpoints: getRandomInt(enemyConfig.hitpoints.min, enemyConfig.hitpoints.max),
+              strength: getRandomInt(enemyConfig.strength.min, enemyConfig.strength.max),
+            },
+          },
+          loot: {
+            createMany: {
+              data: [
+                {
+                  key: 'sword-default',
+                  active: true,
+                },
+              ],
             },
           },
         },

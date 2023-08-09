@@ -6,7 +6,12 @@ export const getActionById = async (id: number) => {
       id,
     },
     include: {
-      characters: true,
+      characters: {
+        include: {
+          stats: true,
+          loot: true,
+        },
+      },
       tile: true,
     },
   });

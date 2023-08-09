@@ -30,7 +30,7 @@ enum TileType {
   EMPTY
 }
 
-enum CharacterConnection {
+enum CharacterStatus {
   ONLINE
   OFFLINE
   AFK
@@ -80,11 +80,14 @@ model Character {
   actionId    Int?
   tile        Tile?         @relation(fields: [tileId], references: [id])
   tileId      Int?     
+  stats       Stats         @relation(fields: [statsId], references: [id])
+  statsId     Int           @unique
+  loot        Loot[] 
   
   name        String
   avatar      String
-  stats       Stats?
-  connection  CharacterConnection  @default(OFFLINE)
+  status      CharacterStatus  @default(OFFLINE)
+  coins       Int           @default(0)
 
   isNpc       Boolean       @default(false)
   isDefeated  Boolean       @default(false)
@@ -103,6 +106,7 @@ model Tile {
 
   characters  Character[]
   actions     Action[]
+  loot        Loot[] 
   
   type        TileType  @default(EMPTY)
   x           Int       @default(0)
@@ -136,30 +140,62 @@ model Action {
   updatedAt   DateTime    @updatedAt @default(now())
 }
 
+model Loot {
+  id            Int         @id @default(autoincrement())
+  character     Character   @relation(fields: [characterId], references: [id])
+  characterId   Int
+  tile          Tile?        @relation(fields: [tileId], references: [id])
+  tileId        Int?
+ 
+  key           String
+  level         Int         @default(1)
+  active        Boolean     @default(false)
+
+  version       Int         @default(0) 
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
 model Stats {
   id            Int         @id @default(autoincrement())
-  character     Character?  @relation(fields: [characterId], references: [id])
-  characterId   Int?        @unique
+  character     Character?
 
+  // Players level - Necessary for loot usage and upgrades of stats
   level         Int         @default(1)
-  ep            Int         @default(0)
-  strength      Int         @default(0)
+
+  // Experience Points - the experience a player gains from fighting enemies - corralates to players level
+  experience    Int         @default(0)
+
+  // Hitpoints - the amount of physical hits a player can take -> 0 == defeated
+  hitpoints     Int         @default(50)
+  hitpointsMax  Int         @default(50)
+
+  // Strength - general physical strength of a player 
+  strength      Int         @default(40)
+  strengthMax   Int         @default(40)
+
+  // Mana - the amount of magical power a player can use -> 0 == no magical spells possible
+  mana          Int         @default(40)
+  manaMax       Int         @default(40)
+
+  // Attack - the power taken into account while fighting
+  attack        Int         @default(0)
+
+  // Wisdom - the power taken into account while spelling
   wisdom        Int         @default(0)
-  stamina       Int         @default(0)
+
+  // Agility - the power taken into account while defending during a fight, also used for escape behavior
   agility       Int         @default(0)
+
+  // Luck - the degree of luck to get better loot or chance of starting a fight
   luck          Int         @default(0)
-  stealth       Int         @default(0)
-  vision        Int         @default(0)
 
-  hp            Int         @default(0)
-  hpMax         Int         @default(0)
-  mana          Int         @default(0)
-  manaMax       Int         @default(0)
-  endurance     Int         @default(0)
-  enduranceMax  Int         @default(0)
-
+  // Steps - Maximum tiles a player can move
   stepsDone     Int         @default(0)
-  stepsMax      Int         @default(4)
+  stepsMax      Int         @default(5)
+
+  // Open stats points the character can split between skills
+  openStatsPoints Int       @default(0)
 
   version       Int         @default(0) 
   createdAt     DateTime    @default(now())

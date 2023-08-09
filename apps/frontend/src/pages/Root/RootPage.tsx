@@ -1,6 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { LogoutButton } from '../../components/Logout/LogoutButton';
 import { RoutePaths } from '../../routing/AppRoutes';
 import { authAtom } from '../../store/authState';
 
@@ -16,7 +15,7 @@ export const RootPage = () => {
           <Button href={RoutePaths.DASHBOARD} variant="contained">
             Dashboard
           </Button>
-          <LogoutButton />
+          <Button>Todo: Logout</Button>
         </>
       ) : (
         <Button href={RoutePaths.LOGIN}>Login</Button>

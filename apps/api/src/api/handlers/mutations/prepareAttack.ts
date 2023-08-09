@@ -8,6 +8,15 @@ import { settings } from '../../../config/settings';
 import { Request, Response } from 'express';
 
 export const prepareAttack = async (req: Request, res: Response) => {
+  try {
+    addAttackToQueue(req);
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(400).json({ error: 'SERVER_ERROR' });
+  }
+};
+
+const addAttackToQueue = async (req: Request) => {
   const actionId = parseInt(req.query.actionId as string, 10);
   const gameId = req.query.gameId as string;
 
@@ -36,6 +45,4 @@ export const prepareAttack = async (req: Request, res: Response) => {
     { gameId, actionId },
     { delay: settings.attack.delayMs },
   );
-
-  res.sendStatus(200);
 };

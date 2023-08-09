@@ -26,3 +26,29 @@ export enum ApiPath {
   GET_ACTIONS_BY_GAME_ID = '/get-actions-by-game-id',
   PREPARE_ATTACK = '/prepare-attack',
 }
+
+export type Range = {
+  min: number;
+  max: number;
+};
+
+export interface WeightedItem<T> {
+  item: T;
+  weight: number;
+}
+
+export interface BattleLogProps {
+  lootDamageDealt?: number;
+  strengthDamageDealt?: number;
+  criticalDamagePercentage?: number;
+  totalDamage?: number;
+  damageBlocked?: number;
+  isCriticalHit?: boolean;
+  strengthLoss?: number;
+  manaLoss?: number;
+  isDefeated?: boolean;
+}
+
+export interface BattleLog {
+  [key: number]: BattleLogProps;
+}

@@ -1,5 +1,4 @@
 import { io } from 'socket.io-client';
-import { SocketEvent } from 'types';
 
 export const socket = io(`ws://localhost:4001`, {
   autoConnect: false,

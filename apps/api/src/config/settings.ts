@@ -1,73 +1,30 @@
-import { TileType } from 'database';
-
-const defaultTileBackgrounds = ['tile/empty1.png', 'tile/empty2.png'];
+import { tiles } from './tiles';
+import { lootConfig } from './loot';
 
 export const settings = {
   theme: {
     name: 'default',
   },
+  init: {
+    totalStatsPoints: 10,
+  },
   attack: {
     diceMax: 20,
     delayMs: 5000,
+    strengthDivider: 13,
+    experienceDivider: 6,
   },
-  tiles: [
-    {
-      type: TileType.START,
-      weight: 0,
-      minDistance: 0,
-      maxDistance: 0,
-      backgrounds: ['tile/start.png'],
-    },
-    {
-      type: TileType.EMPTY,
-      weight: 60,
-      minDistance: 1,
-      backgrounds: defaultTileBackgrounds,
-    },
-    {
-      type: TileType.ENEMY,
-      enemy: {
-        name: 'Monster #1',
-        stats: {
-          levelMin: 3,
-          levelMax: 5,
-          hpMin: 10,
-          hpMax: 15,
-          strengthMin: 5,
-          strengthMax: 8,
-        },
-      },
-      weight: 40,
-      minDistance: 2,
-      maxDistance: 10,
-      backgrounds: defaultTileBackgrounds,
-    },
-    {
-      type: TileType.ENEMY,
-      enemy: {
-        name: 'Monster #2',
-        stats: {
-          levelMin: 5,
-          levelMax: 8,
-          hpMin: 15,
-          hpMax: 19,
-          strengthMin: 7,
-          strengthMax: 12,
-        },
-      },
-      weight: 30,
-      minDistance: 6,
-      maxDistance: 15,
-      backgrounds: defaultTileBackgrounds,
-    },
-    {
-      type: TileType.PORTAL,
-      name: 'Portal',
-      weight: 5,
-      minDistance: 5,
-      backgrounds: defaultTileBackgrounds,
-    },
-  ],
+  level: {
+    statsPointsByLevel: 10,
+  },
+  refreshRates: {
+    hitpoints: 30 * 1000,
+    strength: 30 * 1000,
+    mana: 30 * 1000,
+    steps: 20 * 1000,
+  },
+  tiles,
+  loot: lootConfig,
 };
 
 export type Settings = typeof settings;
